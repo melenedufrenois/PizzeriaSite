@@ -1,4 +1,4 @@
-<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-pieza-cream">
     <div class="absolute inset-0 flex flex-wrap items-center justify-center opacity-10 pointer-events-none">
         {% for i in 0..19 %}
         <div class="font-display text-6xl md:text-8xl text-pieza-green whitespace-nowrap px-8">
@@ -7,34 +7,29 @@
         {% endfor %}
     </div>
 
-    <div class="relative z-10 text-center px-6">
-    <img
-                    src="{{ asset('pizza.png') }}"
-                    alt="Pizza"
-                    style="width: 900px; height: 900px; aspect-ratio: 1/1; position: absolute; top:0; margin-top    : -120px; margin-left: -0px; z-index: -1;"
-                    class="drop-shadow-2xl"
-                />
-        <h1 class="font-display text-[130px] md:text-[150px] lg:text-[200px] text-pieza-green mb-6">
-            PIZZA POUR
-            <br>
-            <span class="text-pieza-orange">TOUS</span>
-        </h1>
+    <div class="relative z-10 flex items-center justify-center px-6 -mt-30">
+        <div class="relative lg:flex lg:flex-row ">
+            <img
+                src="{{ asset('otrari.png') }}"
+                alt="O'Trari Pizza"
+                class="w-full max-w-4xl md:max-w-5xl lg:max-w-6xl h-auto object-contain drop-shadow-2xl"
+            />
+            
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center mt-[500px] lg:relative lg:mt-0">
+                <div class=" px-8 py-6 md:px-12 md:py-8 mb-6">
+                    <h1 class="font-display text-[80px] md:text-[120px] lg:text-[150px] text-pieza-green leading-tight drop-shadow-lg flex flex-col ">
+                        <span class="text-pieza-green bg-pieza-cream/90 px-4 py-2 rounded-2xl">PIZZA POUR</span>
+                        <span class="text-pieza-orange bg-pieza-green/90 px-4 py-2 ">TOUS</span>
+                    </h1>
+                </div>
 
-        <p class="font-body text-lg md:text-xl text-pieza-green/80 max-w-xl mx-auto mb-8">
-            La pizza que tout le monde aime et désire. Préparée avec les ingrédients
-            les plus frais et cuite à la perfection.
-        </p>
-
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            {# <button class="bg-pieza-orange text-pieza-cream px-8 py-4 rounded-full font-body font-semibold text-lg hover:bg-pieza-cream hover:text-pieza-orange transition-all transform hover:scale-105">
-                Order Delivery
-            </button> #}
-            {# <button class="bg-transparent border-2 border-pieza-cream text-pieza-cream px-8 py-4 rounded-full font-body font-semibold text-lg hover:bg-pieza-cream hover:text-pieza-green transition-all">
-                Takeaway
-            </button> #}
-            {# <button class="bg-pieza-orange text-pieza-cream px-8 py-4 rounded-full font-body font-semibold text-lg hover:bg-pieza-cream hover:text-pieza-orange transition-all transform hover:scale-105 shadow-lg">
-                À emporter
-            </button> #}
+                <div class="bg-pieza-cream/90 backdrop-blur-sm rounded-2xl px-6 py-4 md:px-8 md:py-5 max-w-xl mx-auto">
+                    <p class="font-body text-lg md:text-xl text-pieza-green/90 drop-shadow-md">
+                        La pizza que tout le monde aime et désire. Préparée avec les ingrédients
+                        les plus frais et cuite à la perfection.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
