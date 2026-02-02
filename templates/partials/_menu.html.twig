@@ -2,14 +2,14 @@
     <div class="max-w-7xl mx-auto">
         <div class="mb-16">
             <h2 class="font-display text-5xl md:text-7xl text-pieza-green mb-4">
-                BEST <span class="text-pieza-orange">OF</span>
+                LE MEILLEUR <span class="text-pieza-orange">DU</span>
                 <br>
-                THE BEST
+                MEILLEUR
             </h2>
             <p class="font-body text-lg text-pieza-green/70 max-w-xl">
-                We believe that every pizza deserves a deliciously cheesy crust, and
-                that's why we made it our mission to create the cheesiest, most
-                indulgent pizzas around.
+                Nous croyons que chaque pizza mérite une croûte délicieusement fromagère, et
+                c'est pourquoi nous avons fait de notre mission de créer les pizzas les plus
+                fromagères et les plus gourmandes qui soient.
             </p>
         </div>
 
@@ -18,7 +18,7 @@
             <div class="bg-pieza-cream border-2 border-pieza-green rounded-3xl p-6 relative">
                 {% if pizza.popular is defined and pizza.popular %}
                 <div class="absolute -top-3 -right-3 bg-pieza-orange text-pieza-cream font-body font-semibold text-xs px-4 py-2 rounded-full rotate-12">
-                    Popular
+                    Populaire
                 </div>
                 {% endif %}
 
@@ -34,7 +34,7 @@
                     {{ pizza.name }}
                 </h3>
 
-                <div class="flex items-center justify-between gap-2 mb-4">
+                {# <div class="flex items-center justify-between gap-2 mb-4">
                     <button type="button" class="w-10 h-10 rounded-full border-2 border-pieza-green flex items-center justify-center hover:bg-pieza-green hover:text-pieza-cream transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </button>
@@ -42,18 +42,26 @@
                     <button type="button" class="w-10 h-10 rounded-full border-2 border-pieza-green flex items-center justify-center hover:bg-pieza-green hover:text-pieza-cream transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </button>
-                </div>
+                </div> #}
 
-                <button type="button" class="w-full bg-pieza-green text-pieza-cream py-3 rounded-full font-body font-semibold hover:bg-pieza-orange transition-colors">
-                    Add to cart · ${{ pizza.price }}
-                </button>
+                {% if pizza.ingredients is defined %}
+                <div class="mb-4">
+                    <p class="font-body text-sm text-pieza-green/70 mb-2">
+                        {{ pizza.ingredients|join(', ') }}
+                    </p>
+                </div>
+                {% endif %}
+
+                {# <button type="button" class="w-full bg-pieza-green text-pieza-cream py-3 rounded-full font-body font-semibold hover:bg-pieza-orange transition-colors">
+                    Ajouter au panier · {{ pizza.price }}€
+                </button> #}
             </div>
             {% endfor %}
         </div>
 
         <div class="text-center mt-12">
             <button type="button" class="text-pieza-green font-body font-semibold text-lg underline hover:text-pieza-orange transition-colors">
-                See All Pizzas
+                Voir toutes les pizzas
             </button>
         </div>
     </div>
