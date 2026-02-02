@@ -44,7 +44,7 @@ sudo rsync -av --delete \
 
 # Step 3: Fix permissions
 echo -e "${YELLOW}[3/7] Correction des permissions...${NC}"
-sudo chown -R mehdi:www-data "$TARGET_DIR"
+sudo chown -R mehdi:mehdi "$TARGET_DIR"
 sudo chmod -R 775 "$TARGET_DIR/var" 2>/dev/null || true
 
 # Step 4: Install dependencies
@@ -52,16 +52,11 @@ echo -e "${YELLOW}[4/7] Installation des dépendances Composer...${NC}"
 cd "$TARGET_DIR"
 composer install --no-dev --optimize-autoloader
 
-# Step 5: Database migrations (optional fixtures)
-if [ "$WITH_FIXTURES" = true ]; then
-    echo -e "${YELLOW}[5/7] Rechargement complet de la base de données...${NC}"
-    php bin/console doctrine:schema:drop --force --env=prod
-    php bin/console doctrine:schema:create --env=prod
-    php bin/console doctrine:fixtures:load --no-interaction --env=prod
-else
-    echo -e "${YELLOW}[5/7] Exécution des migrations...${NC}"
-    php bin/console doctrine:migrations:migrate --no-interaction --env=prod || true
-fi
+# Step 5: Database - always recreate schema (site vitrine, pas de données utilisateur)
+echo -e "${YELLOW}[5/7] Rechargement de la base de données...${NC}"
+php bin/console doctrine:schema:drop --force --env=prod || true
+php bin/console doctrine:schema:create --env=prod
+php bin/console doctrine:fixtures:load --no-interaction --env=prod
 
 # Step 6: Clear cache & compile assets
 echo -e "${YELLOW}[6/7] Compilation des assets...${NC}"
@@ -74,7 +69,7 @@ echo -e "${YELLOW}[7/7] Build Tailwind CSS...${NC}"
 php bin/console tailwind:build --minify
 
 # Fix var permissions again after builds
-sudo chown -R mehdi:www-data "$TARGET_DIR/var"
+sudo chown -R mehdi:mehdi "$TARGET_DIR/var"
 sudo chmod -R 775 "$TARGET_DIR/var"
 
 echo ""
