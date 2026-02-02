@@ -20,8 +20,9 @@ class PageController extends AbstractController
     }
 
     #[Route('/pizzas', name: 'app_pizzas', methods: ['GET'])]
-    public function pizzas(Request $request, PizzaRepository $pizzaRepository): Response
+    public function pizzas(): Response
     {
+<<<<<<< Updated upstream
         $base = $request->query->get('base');
         $type = $request->query->get('type');
         $ingredient = $request->query->get('ingredient');
@@ -56,5 +57,9 @@ class PageController extends AbstractController
             'activeType' => null,
             'activeIngredient' => null,
         ]);
+=======
+        // Redirect to the new unified menu page
+        return $this->redirectToRoute('app_menu', ['category' => 'pizza'], 301);
+>>>>>>> Stashed changes
     }
 }
