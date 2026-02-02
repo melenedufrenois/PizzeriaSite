@@ -25,44 +25,8 @@ class PageController extends AbstractController
     #[Route('/pizzas', name: 'app_pizzas', methods: ['GET'])]
     public function pizzas(): Response
     {
-<<<<<<< Updated upstream
-        $base = $request->query->get('base');
-        $type = $request->query->get('type');
-        $ingredient = $request->query->get('ingredient');
-
-        // Get filter options for pizzas only
-        $types = $pizzaRepository->findAllTypes();
-        $ingredients = $pizzaRepository->findAllIngredients();
-
-        // If filters are applied, show flat list
-        if ($base || $type || $ingredient) {
-            $pizzas = $pizzaRepository->findWithFilters($base, $type, $ingredient);
-            
-            return $this->render('pages/pizzas.html.twig', [
-                'pizzas' => $pizzas,
-                'types' => $types,
-                'ingredients' => $ingredients,
-                'activeBase' => $base,
-                'activeType' => $type,
-                'activeIngredient' => $ingredient,
-            ]);
-        }
-
-        // No filters - show grouped by base
-        $pizzasByBase = $pizzaRepository->findGroupedByBase();
-
-        return $this->render('pages/pizzas.html.twig', [
-            'pizzasByBase' => $pizzasByBase,
-            'types' => $types,
-            'ingredients' => $ingredients,
-            'activeBase' => null,
-            'activeType' => null,
-            'activeIngredient' => null,
-        ]);
-=======
         // Redirect to the new unified menu page
         return $this->redirectToRoute('app_menu', ['category' => 'pizza'], 301);
->>>>>>> Stashed changes
     }
 
     #[Route('/carte', name: 'app_menu', methods: ['GET'])]
