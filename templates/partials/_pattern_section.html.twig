@@ -1,0 +1,13 @@
+<section class="relative bg-pieza-green py-24 overflow-hidden">
+    <div class="absolute inset-0 flex flex-wrap items-center justify-center opacity-20 pointer-events-none gap-x-4 gap-y-8">
+        {% for i in 1..15 %}
+            <span class="font-display text-4xl md:text-6xl whitespace-nowrap {{ i % 3 == 0 ? 'text-pieza-orange' : 'text-pieza-cream' }}">O'Trari</span>
+            <span class="font-display text-4xl md:text-6xl whitespace-nowrap {{ i % 3 == 1 ? 'text-pieza-orange' : 'text-pieza-cream' }}">DELIVERY</span>
+            <span class="font-display text-4xl md:text-6xl whitespace-nowrap {{ i % 3 == 2 ? 'text-pieza-orange' : 'text-pieza-cream' }}">TAKEAWAY</span>
+        {% endfor %}
+    </div>
+    <div class="relative z-10 max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-12">
+        <img src="https://images.pexels.com/photos/803290/pexels-photo-803290.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Pizza" class="w-64 h-64 rounded-full object-cover shadow-2xl border-4 border-white/20">
+        <img src="https://images.pexels.com/photos/803290/pexels-photo-803290.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Pizza" class="w-64 h-64 rounded-full object-cover shadow-2xl border-4 border-white/20 hidden md:block">
+    </div>
+</section>
