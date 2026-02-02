@@ -1,0 +1,39 @@
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 flex flex-wrap items-center justify-center opacity-10 pointer-events-none">
+        {% for i in 0..19 %}
+        <div class="font-display text-6xl md:text-8xl text-pieza-green whitespace-nowrap px-8">
+            O'Trari
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="relative z-10 text-center px-6">
+    <img
+                    src="{{ asset('pizza.png') }}"
+                    alt="Pizza"
+                    style="width: 900px; height: 900px; aspect-ratio: 1/1; position: absolute; top:0; margin-top    : -120px; margin-left: -0px; z-index: -1;"
+                    class="drop-shadow-2xl"
+                />
+        <h1 class="font-display text-[130px] md:text-[150px] lg:text-[200px] text-pieza-green mb-6">
+            PIZZA FOR
+            <br>
+            <span class="text-pieza-orange">EVERYONE</span>
+        </h1>
+
+        <p class="font-body text-lg md:text-xl text-pieza-green/80 max-w-xl mx-auto mb-8">
+            Pizza that everybody loves and wants. Made with the freshest
+            ingredients and cooked to perfection.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button class="bg-pieza-orange text-pieza-cream px-8 py-4 rounded-full font-body font-semibold text-lg hover:bg-pieza-cream hover:text-pieza-orange transition-all transform hover:scale-105">
+                Order Delivery
+            </button>
+            <button class="bg-transparent border-2 border-pieza-cream text-pieza-cream px-8 py-4 rounded-full font-body font-semibold text-lg hover:bg-pieza-cream hover:text-pieza-green transition-all">
+                Takeaway
+            </button>
+        </div>
+    </div>
+
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-pieza-cream to-transparent"></div>
+</section>
