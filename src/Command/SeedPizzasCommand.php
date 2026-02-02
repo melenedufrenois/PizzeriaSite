@@ -1,26 +1,46 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\Command;
 
 use App\Entity\Ingredient;
 use App\Entity\Product;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
+use App\Repository\IngredientRepository;
+use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class AppFixtures extends Fixture
+#[AsCommand(
+    name: 'app:seed-pizzas',
+    description: 'Seed initial ingredients and pizzas without duplicating existing entries.'
+)]
+class SeedPizzasCommand extends Command
 {
-    public function load(ObjectManager $manager): void
-    {
-        // Création des ingrédients
-        $ingredients = $this->createIngredients($manager);
-
-        // Création des pizzas
-        $this->createPizzas($manager, $ingredients);
-
-        $manager->flush();
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly IngredientRepository $ingredientRepository,
+        private readonly ProductRepository $productRepository
+    ) {
+        parent::__construct();
     }
 
-    private function createIngredients(ObjectManager $manager): array
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $ingredients = $this->seedIngredients();
+        $this->seedPizzas($ingredients);
+
+        $this->entityManager->flush();
+
+        $output->writeln('<info>Seed terminé.</info>');
+        return Command::SUCCESS;
+    }
+
+    /**
+     * @return array<string, Ingredient>
+     */
+    private function seedIngredients(): array
     {
         $ingredientData = [
             ['name' => 'Tomate', 'price' => '0.50'],
@@ -49,18 +69,25 @@ class AppFixtures extends Fixture
 
         $ingredients = [];
         foreach ($ingredientData as $data) {
-            $ingredient = new Ingredient();
-            $ingredient->setName($data['name']);
-            $ingredient->setPrice($data['price']);
-            $ingredient->setIsAvailable(true);
-            $manager->persist($ingredient);
+            $ingredient = $this->ingredientRepository->findOneBy(['name' => $data['name']]);
+            if (!$ingredient) {
+                $ingredient = new Ingredient();
+                $ingredient->setName($data['name']);
+                $ingredient->setPrice($data['price']);
+                $ingredient->setIsAvailable(true);
+                $this->entityManager->persist($ingredient);
+            }
+
             $ingredients[$data['name']] = $ingredient;
         }
 
         return $ingredients;
     }
 
-    private function createPizzas(ObjectManager $manager, array $ingredients): void
+    /**
+     * @param array<string, Ingredient> $ingredients
+     */
+    private function seedPizzas(array $ingredients): void
     {
         $pizzas = [
             [
@@ -186,6 +213,11 @@ class AppFixtures extends Fixture
         ];
 
         foreach ($pizzas as $data) {
+            $product = $this->productRepository->findOneBy(['name' => $data['name']]);
+            if ($product) {
+                continue;
+            }
+
             $product = new Product();
             $product->setName($data['name']);
             $product->setDescription($data['description']);
@@ -196,14 +228,14 @@ class AppFixtures extends Fixture
             $product->setIsAvailable(true);
             $product->setIsPopular($data['isPopular']);
 
-            // Ajout des ingrédients
             foreach ($data['ingredients'] as $ingredientName) {
                 if (isset($ingredients[$ingredientName])) {
                     $product->addIngredient($ingredients[$ingredientName]);
                 }
             }
 
-            $manager->persist($product);
+            $this->entityManager->persist($product);
         }
     }
 }
+

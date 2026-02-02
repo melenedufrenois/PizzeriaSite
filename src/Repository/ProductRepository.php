@@ -32,6 +32,37 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param int[] $ingredientIds
+     * @return Product[] Returns available pizzas filtered by base and ingredients
+     */
+    public function findAvailablePizzasWithFilters(?string $baseType, array $ingredientIds = []): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->leftJoin('p.ingredients', 'i')
+            ->addSelect('i')
+            ->andWhere('p.isAvailable = :available')
+            ->setParameter('available', true);
+
+        if ($baseType) {
+            $qb->andWhere('p.baseType = :baseType')
+                ->setParameter('baseType', $baseType);
+        }
+
+        if ($ingredientIds) {
+            $qb->innerJoin('p.ingredients', 'fi')
+                ->andWhere('fi.id IN (:ingredientIds)')
+                ->setParameter('ingredientIds', $ingredientIds)
+                ->groupBy('p.id')
+                ->having('COUNT(DISTINCT fi.id) = :ingredientCount')
+                ->setParameter('ingredientCount', count($ingredientIds));
+        }
+
+        return $qb->orderBy('p.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return Product[] Returns popular products
      */
     public function findPopular(int $limit = 4): array

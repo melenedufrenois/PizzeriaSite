@@ -38,6 +38,9 @@ class Product
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $category = null;
 
+    #[ORM\Column(length: 20)]
+    private string $baseType = 'tomate';
+
     /**
      * @var Collection<int, Ingredient>
      */
@@ -150,6 +153,17 @@ class Product
     public function setCategory(?string $category): static
     {
         $this->category = $category;
+        return $this;
+    }
+
+    public function getBaseType(): string
+    {
+        return $this->baseType;
+    }
+
+    public function setBaseType(string $baseType): static
+    {
+        $this->baseType = $baseType;
         return $this;
     }
 

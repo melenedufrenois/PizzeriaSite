@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}O'Trari - Nos pizzas{% endblock %}
+
+{% block body %}
+    <div class="min-h-screen font-body bg-pieza-cream">
+        {% include 'partials/_header.html.twig' %}
+
+        <section class="py-16 px-6 border-b-2 border-pieza-green/20">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-10">
+                    <h1 class="font-display text-5xl md:text-6xl text-pieza-green mb-4">
+                        Toutes nos <span class="text-pieza-orange">pizzas</span>
+                    </h1>
+                    <p class="font-body text-lg text-pieza-green/70 max-w-2xl">
+                        Filtrez par base et ingrédients pour trouver la pizza parfaite.
+                    </p>
+                </div>
+
+                <form method="get" class="bg-white/60 border-2 border-pieza-green/20 rounded-3xl p-6 md:p-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div>
+                            <h2 class="font-display text-2xl text-pieza-green mb-4">Base</h2>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="flex items-center gap-2 font-body text-pieza-green">
+                                    <input type="radio" name="base" value="" {% if not selectedBase %}checked{% endif %} />
+                                    Toutes
+                                </label>
+                                <label class="flex items-center gap-2 font-body text-pieza-green">
+                                    <input type="radio" name="base" value="tomate" {% if selectedBase == 'tomate' %}checked{% endif %} />
+                                    Base tomate
+                                </label>
+                                <label class="flex items-center gap-2 font-body text-pieza-green">
+                                    <input type="radio" name="base" value="creme" {% if selectedBase == 'creme' %}checked{% endif %} />
+                                    Base crème
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-2">
+                            <h2 class="font-display text-2xl text-pieza-green mb-4">Ingrédients</h2>
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                                {% for ingredient in ingredients %}
+                                    <label class="flex items-center gap-2 font-body text-pieza-green/90 text-sm">
+                                        <input
+                                            type="checkbox"
+                                            name="ingredients[]"
+                                            value="{{ ingredient.id }}"
+                                            {% if ingredient.id in selectedIngredientIds %}checked{% endif %}
+                                        />
+                                        {{ ingredient.name }}
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-4 mt-8">
+                        <button type="submit" class="bg-pieza-green text-pieza-cream px-6 py-3 rounded-full font-body font-semibold hover:bg-pieza-orange transition-colors">
+                            Filtrer
+                        </button>
+                        <a href="{{ path('app_pizzas') }}" class="text-pieza-green font-body font-semibold underline hover:text-pieza-orange transition-colors">
+                            Réinitialiser
+                        </a>
+                        <span class="font-body text-pieza-green/70">
+                            {{ pizzas|length }} résultat{{ pizzas|length > 1 ? 's' : '' }}
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="py-16 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {% for pizza in pizzas %}
+                        <div class="bg-pieza-cream border-2 border-pieza-green rounded-3xl p-6 relative">
+                            {% if pizza.isPopular %}
+                                <div class="absolute -top-3 -right-3 bg-pieza-orange text-pieza-cream font-body font-semibold text-xs px-4 py-2 rounded-full rotate-12">
+                                    Populaire
+                                </div>
+                            {% endif %}
+
+                            <div class="mb-6 relative">
+                                <img
+                                    src="{{ pizza.image }}"
+                                    alt="{{ pizza.name }}"
+                                    class="w-full aspect-square object-cover rounded-full"
+                                />
+                            </div>
+
+                            <h3 class="font-display text-2xl text-pieza-green mb-2">
+                                {{ pizza.name }}
+                            </h3>
+
+                            <p class="font-body text-sm text-pieza-green/60 mb-4 line-clamp-2">
+                                {{ pizza.description }}
+                            </p>
+
+                            <p class="font-body text-xs text-pieza-green/50 mb-4 italic">
+                                {{ pizza.ingredientsAsString }}
+                            </p>
+
+                            <button type="button" class="w-full bg-pieza-green text-pieza-cream py-3 rounded-full font-body font-semibold hover:bg-pieza-orange transition-colors">
+                                Ajouter · {{ pizza.price|number_format(2, ',', ' ') }} €
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="col-span-full text-center py-12">
+                            <p class="font-body text-pieza-green/70 text-lg">
+                                Aucune pizza ne correspond à ces filtres.
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        {% include 'partials/_footer.html.twig' %}
+    </div>
+{% endblock %}
+
