@@ -74,7 +74,7 @@ test.describe('Menu des Pizzas', () => {
   });
 
   test('doit afficher la description du menu', async ({ page }) => {
-    const description = page.locator('#menu p.font-body');
+    const description = page.locator('#menu p.font-body').first();
     await expect(description).toBeVisible();
     await expect(description).toContainText('pizza');
   });

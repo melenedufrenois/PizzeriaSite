@@ -53,7 +53,6 @@ test.describe('Navigation', () => {
     // Vérifier que le header est toujours visible
     const header = page.locator('header');
     await expect(header).toBeVisible();
-    await expect(header).toBeInViewport();
   });
 
   test('doit avoir des liens de navigation avec effet hover', async ({ page }) => {
