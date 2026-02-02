@@ -13,42 +13,32 @@ test.describe('Navigation', () => {
     // Cliquer sur le lien Menu
     await page.click('nav a[href="#menu"]');
     
-    // Attendre un peu que le scroll se fasse
-    await page.waitForTimeout(500);
-    
     // Vérifier que la section menu est visible dans le viewport
     const menuSection = page.locator('#menu');
-    await expect(menuSection).toBeInViewport();
+    await expect(menuSection).toBeInViewport({ timeout: 2000 });
   });
 
   test('doit naviguer vers la section à propos en cliquant sur le lien', async ({ page }) => {
     // Cliquer sur le lien À propos
     await page.click('nav a[href="#about"]');
     
-    // Attendre un peu que le scroll se fasse
-    await page.waitForTimeout(500);
-    
     // Vérifier que la section about est visible dans le viewport
     const aboutSection = page.locator('#about');
-    await expect(aboutSection).toBeInViewport();
+    await expect(aboutSection).toBeInViewport({ timeout: 2000 });
   });
 
   test('doit naviguer vers la section contact en cliquant sur le lien', async ({ page }) => {
     // Cliquer sur le lien Contact
     await page.click('nav a[href="#contact"]');
     
-    // Attendre un peu que le scroll se fasse
-    await page.waitForTimeout(500);
-    
     // Vérifier que la section contact est visible
     const contactSection = page.locator('#contact');
-    await expect(contactSection).toBeInViewport();
+    await expect(contactSection).toBeInViewport({ timeout: 2000 });
   });
 
   test('doit garder le header visible lors du scroll', async ({ page }) => {
     // Scroller vers le bas
     await page.evaluate(() => window.scrollTo(0, 1000));
-    await page.waitForTimeout(300);
     
     // Vérifier que le header est toujours visible
     const header = page.locator('header');

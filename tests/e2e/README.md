@@ -102,9 +102,9 @@ await page.hover('.menu-item')
 await page.evaluate(() => window.scrollTo(0, 1000))
 
 // Attente
-await page.waitForTimeout(1000)
 await page.waitForSelector('.loaded')
 await page.waitForLoadState('networkidle')
+// Éviter waitForTimeout() - préférer les assertions avec timeout
 ```
 
 ## 📝 Exemples de tests spécifiques
