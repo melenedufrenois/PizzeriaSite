@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pizzeria Visual Identity{% endblock %}
+
+{% block body %}
+    <div class="min-h-screen font-body">
+        {% include 'partials/_header.html.twig' %}
+        {% include 'partials/_hero.html.twig' %}
+        {% include 'partials/_menu.html.twig' with { pizzas: pizzas } %}
+        {% include 'partials/_storytelling.html.twig' %}
+        {% include 'partials/_about.html.twig' %}
+        {% include 'partials/_footer.html.twig' %}
+    </div>
+{% endblock %}

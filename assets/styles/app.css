@@ -1,3 +1,23 @@
-body {
-    background-color: skyblue;
+@import "tailwindcss";
+
+/* Inclure les templates Twig pour que les classes (y compris arbitraires comme text-[300px]) soient détectées */
+@source "../../templates";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lilita+One&display=swap');
+
+@theme {
+  --color-pieza-green: #2D3B2F;
+  --color-pieza-cream: #F5F1E8;
+  --color-pieza-orange: #FF6B4A;
+  --font-display: "Lilita One", cursive;
+  --font-body: "Inter", sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-pieza-cream font-body;
+  }
 }
