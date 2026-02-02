@@ -14,28 +14,32 @@ class PageController extends AbstractController
         $pizzas = [
             [
                 'id' => 1,
-                'name' => 'Margarita',
+                'name' => 'Margherita',
                 'image' => 'https://images.pexels.com/photos/2147491/pexels-photo-2147491.jpeg?auto=compress&cs=tinysrgb&w=400',
                 'price' => 18,
+                'ingredients' => ['Tomate', 'Mozzarella', 'Basilic'],
             ],
             [
                 'id' => 2,
-                'name' => 'Greek pizza',
+                'name' => 'Grecque',
                 'image' => 'https://images.pexels.com/photos/803290/pexels-photo-803290.jpeg?auto=compress&cs=tinysrgb&w=400',
                 'price' => 18,
+                'ingredients' => ['Tomate', 'Mozzarella', 'Olives', 'Feta', 'Oignons'],
             ],
             [
                 'id' => 3,
-                'name' => 'Four cheese',
-                'image' => 'https://images.pexels.com/photos/7595072/pexels-photo-7595072.jpeg?auto=compress&cs=tinysrgb&w=400',
+                'name' => 'Quatre fromages',
+                'image' => 'https://images.pexels.com/photos/1146760/pexels-photo-1146760.jpeg?auto=compress&cs=tinysrgb&w=400',
                 'price' => 18,
+                'ingredients' => ['Mozzarella', 'Gorgonzola', 'Parmesan', 'Chèvre'],
             ],
             [
                 'id' => 4,
-                'name' => 'Meat lover',
+                'name' => 'Amateur de viande',
                 'image' => 'https://images.pexels.com/photos/1146760/pexels-photo-1146760.jpeg?auto=compress&cs=tinysrgb&w=400',
                 'price' => 18,
                 'popular' => true,
+                'ingredients' => ['Tomate', 'Mozzarella', 'Pepperoni', 'Bacon', 'Saucisse', 'Jambon'],
             ],
         ];
 
