@@ -99,5 +99,3 @@ Voir le fichier `.env` pour configurer :
 ---
 
 **Pizzeria O'Trari** 🍕
-
-**Site de la Pizzeria O'Trari** 🍕
