@@ -23,6 +23,17 @@ But: memo court et fiable de la stack detectee dans le repo. A relire a chaque p
 - Exemple par defaut dans `.env`: PostgreSQL. Adaptable a MySQL/MariaDB.
 - Config principale: `config/packages/doctrine.yaml`.
 
+### Entites
+- **Pizza** (`src/Entity/Pizza.php`): Entite principale
+  - Champs: id, name, image, price, ingredients (JSON), base (tomate/creme), type, popular, active, createdAt
+  - Repository: `src/Repository/PizzaRepository.php`
+  - Migration: `migrations/Version20260202000000.php`
+  - Fixtures: `src/DataFixtures/PizzaFixtures.php`
+
+## Pages et routes
+- `/` (app_home): Page d'accueil avec 4 pizzas populaires
+- `/pizzas` (app_pizzas): Page vitrine avec toutes les pizzas, filtres et tri par base
+
 ## Tests
 - PHPUnit (`phpunit/phpunit`) et config `phpunit.dist.xml`.
 
@@ -31,4 +42,5 @@ But: memo court et fiable de la stack detectee dans le repo. A relire a chaque p
 
 ## Notes de deploiement
 - Ce repo ne contient pas de config Nginx. Le vhost est gere sur le VPS.
+- Apres deploiement: `php bin/console doctrine:migrations:migrate` et `php bin/console doctrine:fixtures:load`
 
