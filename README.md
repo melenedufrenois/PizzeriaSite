@@ -1,101 +1,159 @@
-# Pizzeria O'Trari - Site Vitrine
+# 🍕 Pizzeria O'Trari
 
-Bienvenue sur le site officiel de la **Pizzeria O'Trari**. Un site vitrine moderne et élégant présentant nos délicieuses pizzas et services.
+Application web de pizzeria développée avec Symfony 7.4.
 
-## 📋 À propos
-
-La Pizzeria O'Trari est un établissement proposant une sélection de pizzas artisanales réalisées avec des ingrédients de qualité. Ce site vitrine permet aux clients de découvrir notre offre, consulter nos menus et nous contacter facilement.
-
-## 🛠 Technologies utilisées
-
-- **Framework** : Symfony 6.x
-- **Langage serveur** : PHP 8.x
-- **Base de données** : Doctrine ORM
-- **Frontend** : JavaScript (Stimulus), CSS
-- **Templating** : Twig
-- **Conteneurisation** : Docker Compose
-
-## 🚀 Installation et démarrage
+## 🐳 Démarrage rapide avec Docker
 
 ### Prérequis
 
-- PHP 8.1+
-- Composer
-- Node.js 16+ (pour les assets)
-- Docker & Docker Compose (optionnel)
+- [Docker](https://www.docker.com/get-started) installé
+- [Docker Compose](https://docs.docker.com/compose/install/) installé
 
-### Étapes d'installation
+### Lancement (une seule commande !)
 
-1. **Cloner le projet**
-   ```bash
-   git clone <repository-url>
-   cd pizzeria
-   ```
+**Windows :**
+```bash
+.\start.bat
+```
 
-2. **Installer les dépendances PHP**
-   ```bash
-   composer install
-   ```
+**Linux/Mac :**
+```bash
+chmod +x start.sh && ./start.sh
+```
 
-3. **Configurer l'environnement**
-   ```bash
-   cp .env.example .env
-   # Éditer le fichier .env avec vos configurations
-   ```
+**OU manuellement :**
+```bash
+# Construire et démarrer
+docker compose up -d --build
 
-4. **Installer les dépendances JavaScript**
-   ```bash
-   npm install
-   ```
+# Attendre 30 secondes que MySQL démarre, puis :
+docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
+docker compose exec php php bin/console doctrine:fixtures:load --no-interaction
+docker compose exec php php bin/console tailwind:build
+```
 
-5. **Construire les assets**
-   ```bash
-   npm run build
-   ```
+### 🌐 Accès
 
-6. **Démarrer avec Docker Compose**
-   ```bash
-   docker-compose up -d
-   ```
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Application** | http://localhost:8000 | Site Pizzeria |
+| **phpMyAdmin** | http://localhost:8080 | Administration BDD |
 
-7. **Accéder au site**
-   - L'application est disponible sur `http://localhost`
+### Identifiants BDD
+
+| Paramètre | Valeur |
+|-----------|--------|
+| Hôte | database |
+| Base | pizzeria |
+| Utilisateur | pizzeria_user |
+| Mot de passe | pizzeria_password |
+
+---
+
+## 🛠️ Commandes utiles
+
+```bash
+# Voir les logs
+docker compose logs -f
+
+# Accéder au conteneur PHP
+docker compose exec php bash
+
+# Reconstruire Tailwind
+docker compose exec php php bin/console tailwind:build
+
+# Vider le cache
+docker compose exec php php bin/console cache:clear
+
+# Recharger les fixtures
+docker compose exec php php bin/console doctrine:fixtures:load --no-interaction
+
+# Arrêter les conteneurs
+docker compose down
+
+# Arrêter et supprimer les volumes (reset complet)
+docker compose down -v
+```
+
+---
 
 ## 📁 Structure du projet
 
 ```
-pizzeria/
-├── assets/              # Fichiers CSS et JavaScript
-├── bin/                 # Scripts exécutables
-├── config/              # Configuration de l'application
-├── migrations/          # Migrations de base de données
-├── public/              # Fichiers publics et point d'entrée
-├── src/                 # Code source (Controllers, Entities, etc.)
-├── templates/           # Fichiers Twig HTML
-├── vendor/              # Dépendances Composer
-└── var/                 # Cache et logs
+PizzeriaSite/
+├── docker/
+│   └── nginx/
+│       └── default.conf      # Config Nginx
+├── src/
+│   ├── Controller/           # Contrôleurs Symfony
+│   ├── Entity/               # Entités Doctrine
+│   ├── Repository/           # Repositories
+│   └── DataFixtures/         # Données de test
+├── templates/                # Templates Twig
+├── migrations/               # Migrations Doctrine
+├── docs/                     # Documentation
+├── compose.yaml              # Docker Compose
+├── Dockerfile                # Image PHP
+├── start.bat                 # Script Windows
+└── start.sh                  # Script Linux/Mac
 ```
-
-## ✨ Fonctionnalités principales (pour le moment)
-
-- 🍕 Affichage du catalogue de pizzas
-
-## 📝 Variables d'environnement
-
-Voir le fichier `.env` pour configurer :
-- `DATABASE_URL` : URL de connexion à la base de données
-- `MAILER_DSN` : Configuration du service de mail
-- `APP_ENV` : Environnement (dev/prod)
-
-## 👥 Contributeurs
-
-Équipe de développement - AcLab
-- Trari Mehdi
-- Dufrénois Mélène
-- Duvivier Sacha
-- Kenouz Abdelghani
-- Dadon Théo
 
 ---
 
-**Pizzeria O'Trari** 🍕
+## 📊 Base de données
+
+### Entités
+
+| Entité | Description |
+|--------|-------------|
+| **Product** | Pizzas (nom, description, prix) |
+| **Ingredient** | Ingrédients (ManyToMany avec Product) |
+| **Customer** | Clients (authentification) |
+| **Cart/CartItem** | Panier d'achat |
+| **Order/OrderItem** | Commandes |
+
+### Fixtures
+
+- 22 ingrédients
+- 12 pizzas
+
+📖 Documentation complète : [docs/ARCHITECTURE_BDD.md](docs/ARCHITECTURE_BDD.md)
+
+---
+
+## 🔧 Développement local (sans Docker)
+
+```bash
+# Prérequis : PHP 8.3+, MySQL 8.0, Composer
+
+composer install
+# Configurer DATABASE_URL dans .env.local
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+php bin/console doctrine:fixtures:load
+php bin/console tailwind:build
+php -S localhost:8000 -t public
+```
+
+---
+
+## 🛠 Stack technique
+
+| Composant | Version |
+|-----------|---------|
+| PHP | 8.3 |
+| Symfony | 7.4 |
+| MySQL | 8.0 |
+| Nginx | Alpine |
+| Docker | Latest |
+| Tailwind CSS | 4.x |
+
+---
+
+## 👥 Équipe
+
+Projet Master Cybersécurité - AcLab
+
+## 📄 Licence
+
+Projet académique.

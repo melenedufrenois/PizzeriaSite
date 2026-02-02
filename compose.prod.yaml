@@ -1,0 +1,139 @@
+# ============================================
+# 🚀 Docker Compose - PRODUCTION (Serveur 2Go RAM)
+# ============================================
+# Usage: docker compose -f compose.prod.yaml up -d
+# 
+# Total RAM estimé: ~800-900 Mo (laisse ~1.1 Go pour l'OS)
+# ============================================
+
+services:
+  # ============================================
+  # 🐘 PHP/Symfony Application
+  # ============================================
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pizzeria_php
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    volumes:
+      - .:/var/www/html:cached
+      - vendor_data:/var/www/html/vendor
+      - var_data:/var/www/html/var
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
+      DATABASE_URL: mysql://pizzeria_user:pizzeria_password@database:3306/pizzeria?serverVersion=8.0.32&charset=utf8mb4
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - pizzeria_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================
+  # 🌐 Nginx Web Server
+  # ============================================
+  nginx:
+    image: nginx:alpine
+    container_name: pizzeria_nginx
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+        reservations:
+          memory: 32M
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - .:/var/www/html:cached
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+    networks:
+      - pizzeria_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================
+  # 🗄️ MySQL Database (Ultra-optimisé pour 2Go RAM)
+  # ============================================
+  database:
+    image: mysql:8.0
+    container_name: pizzeria_mysql
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_secure_2024}
+      MYSQL_DATABASE: pizzeria
+      MYSQL_USER: pizzeria_user
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-pizzeria_password}
+    # ⚠️ Ne pas exposer le port 3306 en production!
+    # ports:
+    #   - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    volumes:
+      - database_data:/var/lib/mysql:rw
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --innodb-buffer-pool-size=128M
+      --innodb-log-buffer-size=8M
+      --innodb-flush-log-at-trx-commit=2
+      --max-connections=30
+      --key-buffer-size=16M
+      --tmp-table-size=16M
+      --max-heap-table-size=16M
+      --performance-schema=OFF
+      --table-open-cache=100
+      --thread-cache-size=4
+      --skip-name-resolve
+      --innodb-flush-method=O_DIRECT
+    networks:
+      - pizzeria_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ============================================
+# 📁 Volumes persistants
+# ============================================
+volumes:
+  database_data:
+    driver: local
+  vendor_data:
+    driver: local
+  var_data:
+    driver: local
+
+# ============================================
+# 🔗 Réseaux
+# ============================================
+networks:
+  pizzeria_network:
+    driver: bridge

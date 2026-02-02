@@ -1,0 +1,37 @@
+# Dépendances
+/vendor/
+/node_modules/
+
+# Cache et logs
+/var/
+
+# Fichiers de configuration locale
+.env.local
+.env.*.local
+
+# IDE
+/.idea/
+/.vscode/
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose*.yml
+compose*.yaml
+/docker/
+
+# Tests
+/tests/
+
+# Documentation
+/docs/
+*.md
+
+# Fichiers temporaires
+*.log
+*.cache
+.DS_Store
+Thumbs.db
