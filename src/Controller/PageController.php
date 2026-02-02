@@ -2,47 +2,59 @@
 
 namespace App\Controller;
 
+use App\Entity\Pizza;
+use App\Repository\PizzaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class PageController extends AbstractController
 {
     #[Route('/', name: 'app_home', methods: ['GET'])]
-    public function home(): Response
+    public function home(PizzaRepository $pizzaRepository): Response
     {
-        $pizzas = [
-            [
-                'id' => 1,
-                'name' => 'Margherita',
-                'image' => 'https://images.pexels.com/photos/2147491/pexels-photo-2147491.jpeg?auto=compress&cs=tinysrgb&w=400',
-                'price' => 18,
-                'ingredients' => ['Tomate', 'Mozzarella', 'Basilic'],
-            ],
-            [
-                'id' => 2,
-                'name' => 'Grecque',
-                'image' => 'https://images.pexels.com/photos/803290/pexels-photo-803290.jpeg?auto=compress&cs=tinysrgb&w=400',
-                'price' => 18,
-                'ingredients' => ['Tomate', 'Mozzarella', 'Olives', 'Feta', 'Oignons'],
-            ],
-            [
-                'id' => 3,
-                'name' => 'Quatre fromages',
-                'image' => 'https://images.pexels.com/photos/1146760/pexels-photo-1146760.jpeg?auto=compress&cs=tinysrgb&w=400',
-                'price' => 18,
-                'ingredients' => ['Mozzarella', 'Gorgonzola', 'Parmesan', 'Chèvre'],
-            ],
-            [
-                'id' => 4,
-                'name' => 'Amateur de viande',
-                'image' => 'https://images.pexels.com/photos/1146760/pexels-photo-1146760.jpeg?auto=compress&cs=tinysrgb&w=400',
-                'price' => 18,
-                'popular' => true,
-                'ingredients' => ['Tomate', 'Mozzarella', 'Pepperoni', 'Bacon', 'Saucisse', 'Jambon'],
-            ],
-        ];
+        $pizzas = $pizzaRepository->findPopular(4);
 
         return $this->render('pages/home.html.twig', ['pizzas' => $pizzas]);
+    }
+
+    #[Route('/pizzas', name: 'app_pizzas', methods: ['GET'])]
+    public function pizzas(Request $request, PizzaRepository $pizzaRepository): Response
+    {
+        $base = $request->query->get('base');
+        $type = $request->query->get('type');
+        $ingredient = $request->query->get('ingredient');
+
+        // Get filter options
+        $types = $pizzaRepository->findAllTypes();
+        $ingredients = $pizzaRepository->findAllIngredients();
+        sort($ingredients);
+
+        // If filters are applied, show flat list
+        if ($base || $type || $ingredient) {
+            $pizzas = $pizzaRepository->findWithFilters($base, $type, $ingredient);
+            
+            return $this->render('pages/pizzas.html.twig', [
+                'pizzas' => $pizzas,
+                'types' => $types,
+                'ingredients' => $ingredients,
+                'activeBase' => $base,
+                'activeType' => $type,
+                'activeIngredient' => $ingredient,
+            ]);
+        }
+
+        // No filters - show grouped by base
+        $pizzasByBase = $pizzaRepository->findGroupedByBase();
+
+        return $this->render('pages/pizzas.html.twig', [
+            'pizzasByBase' => $pizzasByBase,
+            'types' => $types,
+            'ingredients' => $ingredients,
+            'activeBase' => null,
+            'activeType' => null,
+            'activeIngredient' => null,
+        ]);
     }
 }

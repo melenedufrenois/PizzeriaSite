@@ -1,0 +1,59 @@
+<div class="bg-pieza-cream border-2 border-pieza-green rounded-3xl p-6 relative hover:shadow-xl transition-shadow duration-300 group">
+    {% if pizza.popular is defined and pizza.popular %}
+    <div class="absolute -top-3 -right-3 bg-pieza-orange text-pieza-cream font-body font-semibold text-xs px-4 py-2 rounded-full rotate-12 z-10">
+        Populaire
+    </div>
+    {% elseif pizza.isPopular is defined and pizza.isPopular() %}
+    <div class="absolute -top-3 -right-3 bg-pieza-orange text-pieza-cream font-body font-semibold text-xs px-4 py-2 rounded-full rotate-12 z-10">
+        Populaire
+    </div>
+    {% endif %}
+
+    {# Base Badge #}
+    {% set base = pizza.base is defined ? pizza.base : (pizza.getBase is defined ? pizza.getBase() : null) %}
+    {% if base %}
+    <div class="absolute top-4 left-4 z-10">
+        <span class="bg-white/90 backdrop-blur-sm text-pieza-green font-body text-xs px-3 py-1 rounded-full border border-pieza-green/30">
+            {{ base == 'tomate' ? '🍅 Tomate' : '🥛 Crème' }}
+        </span>
+    </div>
+    {% endif %}
+
+    <div class="mb-6 relative overflow-hidden rounded-full">
+        <img
+            src="{{ pizza.image is defined ? pizza.image : pizza.getImage() }}"
+            alt="{{ pizza.name is defined ? pizza.name : pizza.getName() }}"
+            class="w-full aspect-square object-cover rounded-full group-hover:scale-105 transition-transform duration-300"
+        />
+    </div>
+
+    <h3 class="font-display text-2xl text-pieza-green mb-2">
+        {{ pizza.name is defined ? pizza.name : pizza.getName() }}
+    </h3>
+
+    {# Type #}
+    {% set type = pizza.type is defined ? pizza.type : (pizza.getType is defined ? pizza.getType() : null) %}
+    {% if type %}
+    <span class="inline-block bg-pieza-green/10 text-pieza-green font-body text-xs px-3 py-1 rounded-full mb-3 capitalize">
+        {{ type }}
+    </span>
+    {% endif %}
+
+    {# Ingredients #}
+    {% set ingredients = pizza.ingredients is defined ? pizza.ingredients : (pizza.getIngredients is defined ? pizza.getIngredients() : []) %}
+    {% if ingredients|length > 0 %}
+    <div class="mb-4">
+        <p class="font-body text-sm text-pieza-green/70">
+            {{ ingredients|join(', ') }}
+        </p>    
+    </div>
+    {% endif %}
+
+    {# Price #}
+    {% set price = pizza.price is defined ? pizza.price : (pizza.getPrice is defined ? pizza.getPrice() : null) %}
+    {% if price %}
+    <div class="flex items-center justify-between mt-auto pt-4 border-t border-pieza-green/20">
+        <span class="font-display text-2xl text-pieza-orange">{{ price|number_format(2, ',', ' ') }}€</span>
+    </div>
+    {% endif %}
+</div>
