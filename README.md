@@ -98,6 +98,79 @@ PizzeriaSite/
 └── start.sh                  # Script Linux/Mac
 ```
 
+## ✨ Fonctionnalités principales (pour le moment)
+
+- 🍕 Affichage du catalogue de pizzas
+
+## 🧪 Tests automatisés
+
+Le projet utilise [Playwright](https://playwright.dev/) pour les tests end-to-end (E2E).
+
+### Structure des tests
+
+Les tests sont organisés dans le dossier `tests/e2e/` :
+- `homepage.spec.ts` : Tests de la page d'accueil
+- `menu.spec.ts` : Tests du menu des pizzas
+- `navigation.spec.ts` : Tests de navigation
+- `accessibility.spec.ts` : Tests d'accessibilité
+
+### Exécuter les tests
+
+1. **Installer les dépendances de test**
+   ```bash
+   npm install
+   npx playwright install chromium
+   ```
+
+2. **Démarrer le serveur de développement**
+   ```bash
+   php -S localhost:8000 -t public
+   # ou avec Symfony CLI
+   symfony server:start
+   ```
+
+3. **Exécuter les tests**
+   ```bash
+   # Tous les tests
+   npm test
+   
+   # Tests en mode interface (UI mode)
+   npm run test:ui
+   
+   # Tests en mode visible (headed)
+   npm run test:headed
+   
+   # Tests en mode debug
+   npm run test:debug
+   
+   # Voir le rapport
+   npm run test:report
+   ```
+
+### Configuration
+
+La configuration Playwright se trouve dans `playwright.config.ts`. Par défaut :
+- Les tests s'exécutent sur Chromium
+- L'URL de base est `http://localhost` (peut être modifiée via `BASE_URL`)
+- Les captures d'écran sont prises en cas d'échec
+- Les traces sont enregistrées lors du premier retry
+
+## 📝 Variables d'environnement
+
+Voir le fichier `.env` pour configurer :
+- `DATABASE_URL` : URL de connexion à la base de données
+- `MAILER_DSN` : Configuration du service de mail
+- `APP_ENV` : Environnement (dev/prod)
+
+## 👥 Contributeurs
+
+Équipe de développement - AcLab
+- Trari Mehdi
+- Dufrénois Mélène
+- Duvivier Sacha
+- Kenouz Abdelghani
+- Dadon Théo
+
 ---
 
 ## 📊 Base de données

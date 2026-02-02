@@ -24,16 +24,41 @@ But: memo court et fiable de la stack detectee dans le repo. A relire a chaque p
 - Config prod effective dans `/var/www/pizzeria/.env.local`.
 - Config principale: `config/packages/doctrine.yaml`.
 
-### Entites
-- **Pizza** (`src/Entity/Pizza.php`): Entite principale
-  - Champs: id, name, image, price, ingredients (JSON), base (tomate/creme), type, popular, active, createdAt
+### Entites (Heritage JOINED Doctrine)
+Architecture d'heritage: `Product` est la classe abstraite parente, les classes enfants heritent avec leurs propres tables.
+
+- **Product** (`src/Entity/Product.php`): Classe abstraite parente
+  - Table: `product` (champs communs + colonne discriminante `dtype`)
+  - Champs: id, name, description, image, price, type, popular, active, createdAt
+  - Repository: `src/Repository/ProductRepository.php`
+
+- **Pizza** (`src/Entity/Pizza.php`): extends Product
+  - Table: `pizza` (id FK vers product + champs specifiques)
+  - Champs specifiques: base (tomate/creme), ingredients (JSON)
   - Repository: `src/Repository/PizzaRepository.php`
-  - Migration: `migrations/Version20260202000000.php`
-  - Fixtures: `src/DataFixtures/PizzaFixtures.php`
+
+- **Pasta** (`src/Entity/Pasta.php`): extends Product
+  - Table: `pasta` (id FK vers product + champs specifiques)
+  - Champs specifiques: ingredients (JSON), pastaType
+  - Repository: `src/Repository/PastaRepository.php`
+
+- **Dessert** (`src/Entity/Dessert.php`): extends Product
+  - Table: `dessert` (id FK vers product + champs specifiques)
+  - Champs specifiques: ingredients (JSON), containsAllergens
+  - Repository: `src/Repository/DessertRepository.php`
+
+- **Drink** (`src/Entity/Drink.php`): extends Product
+  - Table: `drink` (id FK vers product + champs specifiques)
+  - Champs specifiques: volume, isAlcoholic
+  - Repository: `src/Repository/DrinkRepository.php`
+
+- Migration: `migrations/Version20260202200000.php` (heritage JOINED)
+- Fixtures: `src/DataFixtures/ProductFixtures.php` (12 pizzas, 6 pates, 5 desserts, 8 boissons)
 
 ## Pages et routes
 - `/` (app_home): Page d'accueil avec 4 pizzas populaires
 - `/pizzas` (app_pizzas): Page vitrine avec toutes les pizzas, filtres et tri par base
+- `/carte` (app_menu): La carte complete avec tous les produits (pizzas, pates, desserts, boissons)
 
 ## Tests
 - PHPUnit (`phpunit/phpunit`) et config `phpunit.dist.xml`.
