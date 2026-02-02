@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Pizza;
+use App\Entity\Pasta;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Pizza>
+ * @extends ServiceEntityRepository<Pasta>
  */
-class PizzaRepository extends ServiceEntityRepository
+class PastaRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Pizza::class);
+        parent::__construct($registry, Pasta::class);
     }
 
     /**
-     * @return Pizza[]
+     * @return Pasta[]
      */
     public function findAllActive(): array
     {
@@ -30,59 +30,28 @@ class PizzaRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Pizza[]
+     * @return Pasta[]
      */
-    public function findByBase(string $base): array
+    public function findPopular(int $limit = 4): array
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.active = :active')
-            ->andWhere('p.base = :base')
             ->setParameter('active', true)
-            ->setParameter('base', $base)
-            ->orderBy('p.name', 'ASC')
+            ->orderBy('p.popular', 'DESC')
+            ->addOrderBy('p.name', 'ASC')
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
     }
 
     /**
-     * Group pizzas by base
-     * @return array<string, Pizza[]>
+     * @return Pasta[]
      */
-    public function findGroupedByBase(): array
+    public function findWithFilters(?string $type = null, ?string $ingredient = null): array
     {
-        $pizzas = $this->findAllActive();
-        
-        $grouped = [
-            Pizza::BASE_TOMATE => [],
-            Pizza::BASE_CREME => [],
-        ];
-
-        foreach ($pizzas as $pizza) {
-            $base = $pizza->getBase();
-            if ($base && isset($grouped[$base])) {
-                $grouped[$base][] = $pizza;
-            }
-        }
-
-        return $grouped;
-    }
-
-    /**
-     * @return Pizza[]
-     */
-    public function findWithFilters(
-        ?string $base = null,
-        ?string $type = null,
-        ?string $ingredient = null
-    ): array {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.active = :active')
             ->setParameter('active', true);
-
-        if ($base) {
-            $qb->andWhere('p.base = :base')
-               ->setParameter('base', $base);
-        }
 
         if ($type) {
             $qb->andWhere('p.type = :type')
@@ -100,22 +69,7 @@ class PizzaRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Pizza[]
-     */
-    public function findPopular(int $limit = 4): array
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.active = :active')
-            ->setParameter('active', true)
-            ->orderBy('p.popular', 'DESC')
-            ->addOrderBy('p.name', 'ASC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * Get all unique types from pizzas
+     * Get all unique types
      * @return string[]
      */
     public function findAllTypes(): array
@@ -132,16 +86,16 @@ class PizzaRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get all unique ingredients from pizzas
+     * Get all unique ingredients
      * @return string[]
      */
     public function findAllIngredients(): array
     {
-        $pizzas = $this->findAllActive();
+        $pastas = $this->findAllActive();
         $ingredients = [];
 
-        foreach ($pizzas as $pizza) {
-            foreach ($pizza->getIngredients() as $ingredient) {
+        foreach ($pastas as $pasta) {
+            foreach ($pasta->getIngredients() as $ingredient) {
                 $ingredients[$ingredient] = true;
             }
         }

@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}La Carte - O'Trari{% endblock %}
+
+{% block body %}
+<div class="min-h-screen font-body bg-pieza-cream">
+    {% include 'partials/_header.html.twig' %}
+
+    <main class="py-12 px-6">
+        <div class="max-w-7xl mx-auto">
+            {# Hero Section #}
+            <div class="mb-12 text-center">
+                <h1 class="font-display text-5xl md:text-7xl text-pieza-green mb-4">
+                    LA <span class="text-pieza-orange">CARTE</span>
+                </h1>
+                <p class="font-body text-lg text-pieza-green/70 max-w-2xl mx-auto">
+                    Découvrez notre sélection complète : pizzas artisanales, pâtes fraîches, desserts gourmands et boissons rafraîchissantes.
+                </p>
+            </div>
+
+            {# Category Pills #}
+            <div class="flex flex-wrap justify-center gap-3 mb-8">
+                <a 
+                    href="{{ path('app_menu') }}" 
+                    class="px-6 py-3 rounded-full font-body font-semibold transition-all {{ activeCategory is null ? 'bg-pieza-green text-pieza-cream' : 'bg-white border-2 border-pieza-green text-pieza-green hover:bg-pieza-green hover:text-pieza-cream' }}"
+                >
+                    Tout
+                </a>
+                {% for catKey, catLabel in categories %}
+                    {% if catKey in activeCategories %}
+                    <a 
+                        href="{{ path('app_menu', {category: catKey}) }}" 
+                        class="px-6 py-3 rounded-full font-body font-semibold transition-all flex items-center gap-2 {{ activeCategory == catKey ? 'bg-pieza-green text-pieza-cream' : 'bg-white border-2 border-pieza-green text-pieza-green hover:bg-pieza-green hover:text-pieza-cream' }}"
+                    >
+                        {% if catKey == 'pizza' %}🍕{% endif %}
+                        {% if catKey == 'pates' %}🍝{% endif %}
+                        {% if catKey == 'dessert' %}🍰{% endif %}
+                        {% if catKey == 'boisson' %}🥤{% endif %}
+                        {{ catLabel }}
+                    </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            {# Context-specific Filters (only when category is selected) #}
+            {% if activeCategory and filters|length > 0 %}
+            <div class="flex flex-wrap justify-center gap-2 mb-8">
+                <a 
+                    href="{{ path('app_menu', {category: activeCategory}) }}" 
+                    class="px-4 py-2 rounded-full font-body text-sm transition-all {{ activeFilter is null ? 'bg-pieza-orange text-pieza-cream' : 'bg-pieza-orange/20 text-pieza-orange hover:bg-pieza-orange/40' }}"
+                >
+                    Tous
+                </a>
+                {% for filterKey, filterLabel in filters %}
+                <a 
+                    href="{{ path('app_menu', {category: activeCategory, filter: filterKey}) }}" 
+                    class="px-4 py-2 rounded-full font-body text-sm transition-all {{ activeFilter == filterKey ? 'bg-pieza-orange text-pieza-cream' : 'bg-pieza-orange/20 text-pieza-orange hover:bg-pieza-orange/40' }}"
+                >
+                    {{ filterLabel }}
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {# Products Display - Grouped by Category #}
+            {% if productsByCategory|length > 0 %}
+                {% for catKey, catProducts in productsByCategory %}
+                    {% if catProducts|length > 0 %}
+                    <section class="mb-16">
+                        <div class="flex items-center gap-4 mb-8">
+                            <span class="text-4xl">
+                                {% if catKey == 'pizza' %}🍕{% endif %}
+                                {% if catKey == 'pates' %}🍝{% endif %}
+                                {% if catKey == 'dessert' %}🍰{% endif %}
+                                {% if catKey == 'boisson' %}🥤{% endif %}
+                            </span>
+                            <h2 class="font-display text-3xl md:text-4xl text-pieza-green">
+                                {{ categories[catKey]|default(catKey|capitalize) }}
+                            </h2>
+                            <div class="flex-1 h-0.5 bg-pieza-green/20 rounded-full"></div>
+                            <span class="font-body text-pieza-green/60">{{ catProducts|length }} produit{{ catProducts|length > 1 ? 's' : '' }}</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {% for product in catProducts %}
+                                {{ include('partials/_product_card.html.twig', {product: product}) }}
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-16">
+                    <span class="text-6xl mb-4 block">🍽️</span>
+                    <h3 class="font-display text-2xl text-pieza-green mb-2">Aucun produit trouvé</h3>
+                    <p class="font-body text-pieza-green/70 mb-6">Essayez de modifier vos critères de recherche.</p>
+                    <a href="{{ path('app_menu') }}" class="inline-block bg-pieza-orange text-pieza-cream px-6 py-3 rounded-full font-body font-semibold hover:bg-pieza-green transition-colors">
+                        Voir toute la carte
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    {% include 'partials/_footer.html.twig' %}
+</div>
+{% endblock %}

@@ -1,57 +1,60 @@
 <div class="bg-pieza-cream border-2 border-pieza-green rounded-3xl p-6 relative hover:shadow-xl transition-shadow duration-300 group">
-    {% if pizza.isPopular is defined and pizza.isPopular() %}
+    {% if product.isPopular() %}
     <div class="absolute -top-3 -right-3 bg-pieza-orange text-pieza-cream font-body font-semibold text-xs px-4 py-2 rounded-full rotate-12 z-10">
         Populaire
     </div>
     {% endif %}
 
-    {# Base Badge #}
-    {% if pizza.getBase is defined and pizza.getBase() %}
-    <div class="absolute top-4 left-4 z-10">
+    {# Category Badge for Pizza base #}
+    <div class="absolute top-4 left-4 z-10 flex gap-2">
+        {% if product.getCategory() == 'pizza' and product.getBase is defined %}
         <span class="bg-white/90 backdrop-blur-sm text-pieza-green font-body text-xs px-3 py-1 rounded-full border border-pieza-green/30">
-            {{ pizza.getBase() == 'tomate' ? '🍅 Tomate' : '🥛 Crème' }}
+            {{ product.getBase() == 'tomate' ? '🍅 Tomate' : '🥛 Crème' }}
         </span>
+        {% endif %}
+        {% if product.getCategory() == 'boisson' and product.getVolume is defined and product.getVolume() %}
+        <span class="bg-white/90 backdrop-blur-sm text-pieza-green font-body text-xs px-3 py-1 rounded-full border border-pieza-green/30">
+            {{ product.getVolume() }}
+        </span>
+        {% endif %}
     </div>
-    {% endif %}
 
     <div class="mb-6 relative overflow-hidden rounded-full">
         <img
-            src="{{ pizza.getImage() }}"
-            alt="{{ pizza.getName() }}"
+            src="{{ product.getImage() }}"
+            alt="{{ product.getName() }}"
             class="w-full aspect-square object-cover rounded-full group-hover:scale-105 transition-transform duration-300"
         />
     </div>
 
     <h3 class="font-display text-2xl text-pieza-green mb-2">
-        {{ pizza.getName() }}
+        {{ product.getName() }}
     </h3>
 
     {# Type #}
-    {% if pizza.getType is defined and pizza.getType() %}
+    {% if product.getType() %}
     <span class="inline-block bg-pieza-green/10 text-pieza-green font-body text-xs px-3 py-1 rounded-full mb-3 capitalize">
-        {{ pizza.getType() }}
+        {{ product.getType() }}
     </span>
     {% endif %}
 
     {# Description or Ingredients #}
-    {% if pizza.getDescription is defined and pizza.getDescription() %}
+    {% if product.getDescription() %}
     <div class="mb-4">
         <p class="font-body text-sm text-pieza-green/70 line-clamp-2">
-            {{ pizza.getDescription() }}
+            {{ product.getDescription() }}
         </p>    
     </div>
-    {% elseif pizza.getIngredients is defined and pizza.getIngredients()|length > 0 %}
+    {% elseif product.getIngredients is defined and product.getIngredients()|length > 0 %}
     <div class="mb-4">
         <p class="font-body text-sm text-pieza-green/70">
-            {{ pizza.getIngredients()|join(', ') }}
+            {{ product.getIngredients()|join(', ') }}
         </p>    
     </div>
     {% endif %}
 
     {# Price #}
-    {% if pizza.getPrice is defined and pizza.getPrice() %}
     <div class="flex items-center justify-between mt-auto pt-4 border-t border-pieza-green/20">
-        <span class="font-display text-2xl text-pieza-orange">{{ pizza.getPrice()|number_format(2, ',', ' ') }}€</span>
+        <span class="font-display text-2xl text-pieza-orange">{{ product.getPrice()|number_format(2, ',', ' ') }}€</span>
     </div>
-    {% endif %}
 </div>
