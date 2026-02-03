@@ -25,3 +25,7 @@
 /test-results/
 /playwright/.cache/
 ###< playwright ###
+
+###> markdown for agents ###
+/AGENTS.md
+###< markdown for agents ###
