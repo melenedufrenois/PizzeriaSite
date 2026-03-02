@@ -155,6 +155,7 @@ class ProductFixtures extends Fixture
             $pizza->setImage($data['image']);
             $pizza->setPrice($data['price']);
             $pizza->setIngredients($data['ingredients']);
+            $pizza->setAllergens($this->getPizzaAllergens($data['name']));
             $pizza->setBase($data['base']);
             $pizza->setType($data['type']);
             $pizza->setPopular($data['popular']);
@@ -236,6 +237,7 @@ class ProductFixtures extends Fixture
             $pasta->setImage($data['image']);
             $pasta->setPrice($data['price']);
             $pasta->setIngredients($data['ingredients']);
+            $pasta->setAllergens($this->getPastaAllergens($data['name']));
             $pasta->setPastaType($data['pastaType']);
             $pasta->setType($data['type']);
             $pasta->setPopular($data['popular']);
@@ -307,6 +309,7 @@ class ProductFixtures extends Fixture
             $dessert->setImage($data['image']);
             $dessert->setPrice($data['price']);
             $dessert->setIngredients($data['ingredients']);
+            $dessert->setAllergens($this->getDessertAllergens($data['name']));
             $dessert->setType($data['type']);
             $dessert->setPopular($data['popular']);
             $dessert->setContainsAllergens($data['containsAllergens']);
@@ -468,6 +471,7 @@ class ProductFixtures extends Fixture
             $drink->setDescription($data['description']);
             $drink->setImage($data['image']);
             $drink->setPrice($data['price']);
+            $drink->setAllergens($this->getDrinkAllergens($data['name']));
             $drink->setVolume($data['volume']);
             $drink->setType($data['type']);
             $drink->setPopular($data['popular']);
@@ -476,5 +480,51 @@ class ProductFixtures extends Fixture
 
             $manager->persist($drink);
         }
+    }
+
+    private function getPizzaAllergens(string $name): array
+    {
+        if ($name === 'Napolitaine' || $name === 'Saumon') {
+            return ['Gluten', 'Lait', 'Poisson'];
+        }
+
+        if (str_contains($name, 'Miel')) {
+            return ['Gluten', 'Lait', 'Fruits à coque'];
+        }
+
+        return ['Gluten', 'Lait'];
+    }
+
+    private function getPastaAllergens(string $name): array
+    {
+        return match ($name) {
+            'Carbonara' => ['Gluten', 'Lait', 'Oeufs'],
+            'Penne Arrabiata' => ['Gluten'],
+            'Tagliatelles au Saumon' => ['Gluten', 'Lait', 'Poisson'],
+            default => ['Gluten', 'Lait'],
+        };
+    }
+
+    private function getDessertAllergens(string $name): array
+    {
+        return match ($name) {
+            'Tiramisu' => ['Gluten', 'Lait', 'Oeufs'],
+            'Panna Cotta', 'Gelato Artisanal' => ['Lait'],
+            'Fondant au Chocolat' => ['Lait', 'Oeufs'],
+            'Cannoli Siciliens' => ['Gluten', 'Lait', 'Fruits à coque'],
+            default => [],
+        };
+    }
+
+    private function getDrinkAllergens(string $name): array
+    {
+        if (str_contains($name, 'Moretti') || str_contains($name, 'Peroni')) {
+            return ['Gluten'];
+        }
+
+        return match ($name) {
+            'Vin Rouge Chianti', 'Vin Blanc Pinot Grigio', 'Aperol Spritz' => ['Sulfites'],
+            default => [],
+        };
     }
 }
