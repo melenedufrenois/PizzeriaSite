@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accès - O'Trari{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-pieza-cream font-body">
+    {% include 'partials/_header.html.twig' %}
+
+    <main class="px-6 py-12">
+        <div class="mx-auto w-full max-w-[1800px]">
+            <section class="mb-10 text-center">
+                <h1 class="mb-4 font-display text-5xl text-pieza-green md:text-6xl">
+                    ACCÈS & <span class="text-pieza-orange">ITINÉRAIRE</span>
+                </h1>
+                <p class="mx-auto max-w-2xl text-lg text-pieza-green/70">
+                    Retrouvez facilement la pizzeria et préparez votre trajet en quelques secondes.
+                </p>
+            </section>
+
+            <section class="grid gap-8 lg:grid-cols-[4fr_1fr]">
+                <div id="pizzeria-map-container" class="relative aspect-[16/9] overflow-hidden rounded-3xl border-2 border-pieza-green bg-white shadow-sm md:aspect-[24/8] xl:aspect-[28/8]">
+                    <iframe
+                        id="pizzeria-map"
+                        data-map-embed="{{ isGoogleMapEnabled ? 'google' : 'osm-fallback' }}"
+                        data-map-url="{{ mapEmbedUrl }}"
+                        src="{{ mapEmbedUrl }}"
+                        title="Carte interactive de la pizzeria O'Trari"
+                        class="h-full w-full"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+
+                <aside class="rounded-3xl border-2 border-pieza-green bg-white p-8 shadow-sm">
+                    <h2 class="mb-4 font-display text-3xl text-pieza-green">
+                        Notre adresse
+                    </h2>
+                    <p class="mb-6 text-lg text-pieza-green/80">{{ address }}</p>
+
+                    <a
+                        href="{{ directionsUrl }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-map-directions
+                        class="inline-flex w-full items-center justify-center rounded-full bg-pieza-green px-6 py-4 text-center font-semibold text-pieza-cream transition-colors hover:bg-pieza-orange"
+                    >
+                        Ouvrir l’itinéraire
+                    </a>
+
+                    <noscript>
+                        <p class="mt-6 text-sm text-pieza-green/70">
+                            JavaScript est désactivé. Utilisez le bouton ci-dessus pour ouvrir la carte.
+                        </p>
+                    </noscript>
+                </aside>
+            </section>
+
+            <section id="map-fallback" class="mt-6 rounded-2xl border-2 border-pieza-green/20 bg-white px-5 py-4 text-center">
+                {% if not isGoogleMapEnabled %}
+                    <p class="mb-2 text-sm font-semibold text-pieza-orange">
+                        Clé Google Maps absente: carte interactive alternative activée.
+                    </p>
+                {% endif %}
+                <p class="text-pieza-green/80">
+                    Si la carte ne s’affiche pas, utilisez directement ce lien :
+                    <a
+                        href="{{ directionsUrl }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-map-directions
+                        class="font-semibold text-pieza-green underline underline-offset-2 hover:text-pieza-orange"
+                    >
+                        ouvrir l’itinéraire Google Maps
+                    </a>
+                </p>
+            </section>
+        </div>
+    </main>
+
+    {% include 'partials/_footer.html.twig' %}
+</div>
+{% endblock %}
