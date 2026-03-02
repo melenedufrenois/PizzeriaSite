@@ -29,3 +29,6 @@
 ###> markdown for agents ###
 /AGENTS.md
 ###< markdown for agents ###
+
+# TDD local tests (non versionnés)
+/test_perso/
