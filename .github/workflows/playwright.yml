@@ -63,8 +63,13 @@ jobs:
 
     - name: Setup test database
       run: |
+        # Schema + fixtures in pizzeria_test (Doctrine _test suffix for CLI)
         php bin/console doctrine:schema:create --env=test
         php bin/console doctrine:fixtures:load --env=test --no-interaction
+        # Create pizzeria DB + grant access + copy data (web server may not use suffix)
+        mysql -h 127.0.0.1 -u root -proot -e "CREATE DATABASE IF NOT EXISTS pizzeria CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+        mysql -h 127.0.0.1 -u root -proot -e "GRANT ALL PRIVILEGES ON pizzeria.* TO 'pizzeria_user'@'%'; FLUSH PRIVILEGES;"
+        mysqldump -h 127.0.0.1 -u root -proot pizzeria_test | mysql -h 127.0.0.1 -u root -proot pizzeria
 
     - name: Compile assets
       run: php bin/console asset-map:compile --env=test
