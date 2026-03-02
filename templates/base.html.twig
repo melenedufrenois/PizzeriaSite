@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Pizzeria O'Trari{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🍕</text></svg>">
         {% block stylesheets %}
         {% endblock %}
 
@@ -12,6 +13,34 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <header class="site-header">
+            <div class="container header-inner">
+                <a href="{{ path('home') }}" class="site-logo">🍕 O'Trari</a>
+                <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-nav">
+                    <span class="nav-toggle__bar"></span>
+                    <span class="nav-toggle__bar"></span>
+                    <span class="nav-toggle__bar"></span>
+                </button>
+                <nav id="main-nav" class="main-nav" aria-label="Navigation principale">
+                    <ul class="nav-list">
+                        <li><a href="{{ path('home') }}" class="nav-link{% if app.request.attributes.get('_route') == 'home' %} nav-link--active{% endif %}">Accueil</a></li>
+                        <li><a href="{{ path('menu') }}" class="nav-link{% if app.request.attributes.get('_route') == 'menu' %} nav-link--active{% endif %}">Notre Carte</a></li>
+                        <li><a href="{{ path('contact') }}" class="nav-link{% if app.request.attributes.get('_route') == 'contact' %} nav-link--active{% endif %}">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="site-main">
+            {% block body %}{% endblock %}
+        </main>
+
+        <footer class="site-footer">
+            <div class="container footer-inner">
+                <p class="footer-brand">🍕 Pizzeria O'Trari</p>
+                <p class="footer-address">12 rue des Oliviers, 75000 Paris &mdash; Tél. 01 23 45 67 89</p>
+                <p class="footer-copy">&copy; {{ "now"|date("Y") }} O'Trari. Tous droits réservés.</p>
+            </div>
+        </footer>
     </body>
 </html>

@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil – Pizzeria O'Trari{% endblock %}
+
+{% block body %}
+<section class="hero">
+    <div class="container">
+        <h1 class="hero__title">Bienvenue chez O'Trari 🍕</h1>
+        <p class="hero__subtitle">Des pizzas artisanales préparées avec amour, des ingrédients frais et une pâte maison.</p>
+        <div class="hero__actions">
+            <a href="{{ path('menu') }}" class="btn btn--primary">Voir notre carte</a>
+            <a href="{{ path('contact') }}" class="btn btn--outline">Nous contacter</a>
+        </div>
+    </div>
+</section>
+
+<section class="section features">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-item__icon">🌿</div>
+                <div class="feature-item__title">Ingrédients frais</div>
+                <p class="feature-item__text">Nous sélectionnons chaque jour des produits locaux et de saison.</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-item__icon">🔥</div>
+                <div class="feature-item__title">Four à bois</div>
+                <p class="feature-item__text">Cuisson traditionnelle au feu de bois pour une pâte croustillante.</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-item__icon">🚀</div>
+                <div class="feature-item__title">Livraison rapide</div>
+                <p class="feature-item__text">Commandez et recevez votre pizza chaude en moins de 30 minutes.</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-item__icon">⭐</div>
+                <div class="feature-item__title">Qualité garantie</div>
+                <p class="feature-item__text">Plus de 10 ans d'expérience et des centaines d'avis 5 étoiles.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section__header">
+            <h2 class="section__title">Nos spécialités</h2>
+            <p class="section__subtitle">Découvrez nos pizzas les plus appréciées par nos clients.</p>
+        </div>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card__emoji">🍕</div>
+                <div class="card__body">
+                    <h3 class="card__title">Margherita</h3>
+                    <p class="card__desc">Sauce tomate, mozzarella, basilic frais</p>
+                    <span class="card__price">10,50 €</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card__emoji">👑</div>
+                <div class="card__body">
+                    <h3 class="card__title">Reine</h3>
+                    <p class="card__desc">Sauce tomate, jambon, champignons, mozzarella</p>
+                    <span class="card__price">12,00 €</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card__emoji">🌶️</div>
+                <div class="card__body">
+                    <h3 class="card__title">Diavola</h3>
+                    <p class="card__desc">Sauce tomate, salami piquant, piment, mozzarella</p>
+                    <span class="card__price">13,00 €</span>
+                    <span class="card__badge">Épicée</span>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center; margin-top: 2rem;">
+            <a href="{{ path('menu') }}" class="btn btn--accent">Voir toute la carte</a>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="background-color: var(--color-bg-alt);">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-text">
+                <h2>Notre histoire</h2>
+                <p>La Pizzeria O'Trari est née d'une passion pour la cuisine italienne authentique. Depuis plus de 10 ans, nous régalons les habitants du quartier avec nos recettes traditionnelles revisitées.</p>
+                <p>Chaque pizza est préparée à la commande avec une pâte maison fermentée 48h et des ingrédients soigneusement sélectionnés.</p>
+                <a href="{{ path('contact') }}" class="btn btn--accent">Nous trouver</a>
+            </div>
+            <div class="about-emoji">🍕</div>
+        </div>
+    </div>
+</section>
+{% endblock %}
