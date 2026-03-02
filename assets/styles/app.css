@@ -20,8 +20,44 @@
   body {
     @apply bg-pieza-cream font-body;
   }
+  /* Override Turbo Drive's default blue progress bar */
+  .turbo-progress-bar {
+    background-color: #FF6B4A !important;
+    height: 3px;
+  }
 }
 
 @layer components {
   /* Animation pour transformer le cercle en carré progressivement */
+
+  /* Skeleton loading animation */
+  .skeleton-pulse {
+    @apply relative overflow-hidden bg-pieza-green/10 rounded-3xl;
+  }
+  .skeleton-pulse::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 100%
+    );
+    animation: skeleton-shimmer 1.5s infinite;
+  }
+  @keyframes skeleton-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Loader bar at top of page */
+  .turbo-progress-bar {
+    @apply fixed top-0 left-0 h-1 bg-pieza-orange z-50;
+    animation: turbo-progress 1.2s ease-in-out infinite;
+  }
+  @keyframes turbo-progress {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 95%; }
+  }
 }
