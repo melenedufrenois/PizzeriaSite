@@ -100,12 +100,93 @@
     @apply top-0;
   }
 
-  .theme-selector {
-    @apply inline-flex items-center gap-2 text-sm;
+  /* --- Theme Toggle (Sun/Moon slider) --- */
+  .theme-toggle {
+    cursor: pointer;
+    width: 62px;
+    height: 30px;
+    background-color: #87CEEB;
+    border-radius: 30px;
+    position: relative;
+    padding: 0;
+    border: 2px solid var(--color-pieza-green);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.5s ease, border-color 0.5s ease;
+    overflow: hidden;
   }
-  .theme-selector select {
-    @apply bg-pieza-cream text-pieza-green border border-pieza-green/30 rounded-full px-3 py-1 cursor-pointer text-sm font-body;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  .theme-toggle:active {
+    transform: scale(0.95);
+  }
+  .theme-toggle.is-dark {
+    background-color: #1a2744;
+    border-color: #4a5568;
+  }
+
+  /* Clouds (visible in day mode) */
+  .theme-toggle__clouds {
+    position: absolute;
+    left: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 1;
+    pointer-events: none;
+  }
+  .theme-toggle.is-dark .theme-toggle__clouds {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  /* Stars (visible in night mode) */
+  .theme-toggle__stars {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .theme-toggle.is-dark .theme-toggle__stars {
+    opacity: 1;
+  }
+
+  /* The sliding circle (sun ↔ moon) */
+  .theme-toggle__slider {
+    width: 22px;
+    height: 22px;
+    background-color: #FFD700;
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+                background-color 0.5s ease,
+                box-shadow 0.5s ease;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+    z-index: 10;
+  }
+  .theme-toggle.is-dark .theme-toggle__slider {
+    transform: translateX(32px);
+    background-color: #f5f3ce;
+    box-shadow: 0 0 8px rgba(245, 243, 206, 0.6);
+  }
+
+  /* Moon crescent (pseudo-element) */
+  .theme-toggle__slider::after {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #1a2744;
+    top: -5px;
+    left: 5px;
+    transition: opacity 0.5s ease;
+    opacity: 0;
+  }
+  .theme-toggle.is-dark .theme-toggle__slider::after {
+    opacity: 1;
   }
   picture {
     display: block;
