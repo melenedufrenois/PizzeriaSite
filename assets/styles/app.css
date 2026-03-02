@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Inclure les templates Twig pour que les classes (y compris arbitraires comme text-[300px]) soient détectées */
+/* Inclure les templates Twig pour que les classes (y compris arbitraires comme text-[300px]) soient detectees */
 @source "../../templates";
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lilita+One&display=swap');
@@ -19,19 +19,29 @@
   }
   body {
     @apply bg-pieza-cream font-body;
-  }
-  /* Override Turbo Drive's default blue progress bar */
-    overflow-x: hidden;
-  }
-  body {
-    @apply bg-pieza-cream font-body;
     overflow-x: hidden;
     min-width: 320px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  body, h1, h2, h3, h4, h5, h6, p {
+    @apply text-pieza-green;
   }
   img, video, svg {
     max-width: 100%;
     height: auto;
   }
+  /* Visible focus indicator for keyboard navigation (WCAG 2.4.7 / 2.4.11) */
+  *:focus-visible {
+    outline: 3px solid #FF6B4A;
+    outline-offset: 3px;
+  }
+
+  /* Suppress outline on mouse click while keeping it for keyboard */
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --color-pieza-cream: #1c1c1c;
@@ -48,25 +58,8 @@
 
 @custom-variant dark (&:is([data-theme="dark"] *));
 
-@layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-  body {
-    @apply bg-pieza-cream font-body;
-    transition: background-color 0.2s ease, color 0.2s ease;
-  }
-  body, h1, h2, h3, h4, h5, h6, p {
-    @apply text-pieza-green;
-  }
-  .turbo-progress-bar {
-    background-color: #FF6B4A !important;
-    height: 3px;
-  }
-}
-
 @layer components {
-  /* Animation pour transformer le cercle en carré progressivement */
+  /* Animation pour transformer le cercle en carre progressivement */
 
   /* Skeleton loading animation */
   .skeleton-pulse {
@@ -99,25 +92,14 @@
     100% { width: 95%; }
   }
 
-  /* Skip link – visually hidden until focused (WCAG 2.4.1) */
+  /* Skip link - visually hidden until focused (WCAG 2.4.1) */
   .skip-link {
     @apply absolute -top-full left-0 z-50 bg-pieza-green text-pieza-cream px-4 py-2 font-body font-semibold no-underline;
   }
   .skip-link:focus {
     @apply top-0;
   }
-}
 
-@layer base {
-  /* Visible focus indicator for keyboard navigation (WCAG 2.4.7 / 2.4.11) */
-  *:focus-visible {
-    outline: 3px solid #FF6B4A;
-    outline-offset: 3px;
-  }
-
-  /* Suppress outline on mouse click while keeping it for keyboard */
-  *:focus:not(:focus-visible) {
-    outline: none;
   .theme-selector {
     @apply inline-flex items-center gap-2 text-sm;
   }
