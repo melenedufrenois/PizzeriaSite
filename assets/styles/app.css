@@ -45,14 +45,14 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --color-pieza-cream: #1c1c1c;
-    --color-pieza-green: #a8c5a4;
+    --color-pieza-green: #d4e4d1;
     --color-pieza-orange: #ff8a65;
   }
 }
 /* Explicit user choice */
 :root[data-theme="dark"] {
   --color-pieza-cream: #1c1c1c;
-  --color-pieza-green: #a8c5a4;
+  --color-pieza-green: #d4e4d1;
   --color-pieza-orange: #ff8a65;
 }
 
@@ -100,93 +100,119 @@
     @apply top-0;
   }
 
-  /* --- Theme Toggle (Sun/Moon slider) --- */
+  /* --- Theme Toggle (two-scene sliding) --- */
   .theme-toggle {
     cursor: pointer;
-    width: 62px;
+    width: 68px;
     height: 30px;
-    background-color: #87CEEB;
     border-radius: 30px;
-    position: relative;
-    padding: 0;
     border: 2px solid var(--color-pieza-green);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    transition: background-color 0.5s ease, border-color 0.5s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    position: relative;
     overflow: hidden;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    background: transparent;
+    transition: border-color 0.6s ease, box-shadow 0.6s ease;
   }
   .theme-toggle:active {
     transform: scale(0.95);
   }
   .theme-toggle.is-dark {
-    background-color: #1a2744;
     border-color: #4a5568;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
   }
 
-  /* Clouds (visible in day mode) */
-  .theme-toggle__clouds {
+  /* The sliding container: 200% wide, holds both scenes side-by-side */
+  .theme-toggle__scenes {
+    width: 200%;
+    height: 100%;
+    display: flex;
     position: absolute;
-    left: 7px;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    opacity: 1;
+    top: 0;
+    left: 0;
+    transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transform: translateX(0);
     pointer-events: none;
   }
-  .theme-toggle.is-dark .theme-toggle__clouds {
-    opacity: 0;
-    transform: translateY(10px);
+  .theme-toggle.is-dark .theme-toggle__scenes {
+    transform: translateX(-50%);
   }
 
-  /* Stars (visible in night mode) */
-  .theme-toggle__stars {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .theme-toggle.is-dark .theme-toggle__stars {
-    opacity: 1;
+  /* Each scene takes exactly half the container (= 100% of the button) */
+  .theme-toggle__scene {
+    width: 50%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
   }
 
-  /* The sliding circle (sun ↔ moon) */
-  .theme-toggle__slider {
+  /* --- Day scene --- */
+  .theme-toggle__scene--day {
+    background-color: #6dc5f3;
+  }
+
+  /* Sun */
+  .theme-toggle__sun {
     width: 22px;
     height: 22px;
     background-color: #FFD700;
     border-radius: 50%;
     position: absolute;
-    top: 4px;
     left: 4px;
-    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55),
-                background-color 0.5s ease,
-                box-shadow 0.5s ease;
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-    z-index: 10;
-  }
-  .theme-toggle.is-dark .theme-toggle__slider {
-    transform: translateX(32px);
-    background-color: #f5f3ce;
-    box-shadow: 0 0 8px rgba(245, 243, 206, 0.6);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
   }
 
-  /* Moon crescent (pseudo-element) */
-  .theme-toggle__slider::after {
+  /* Clouds */
+  .theme-toggle__clouds {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    fill: #fff;
+    opacity: 0.85;
+    width: 22px;
+    height: auto;
+  }
+
+  /* --- Night scene --- */
+  .theme-toggle__scene--night {
+    background-color: #1d2c4e;
+  }
+
+  /* Moon */
+  .theme-toggle__moon {
+    width: 22px;
+    height: 22px;
+    background-color: #f5f3ce;
+    border-radius: 50%;
+    position: absolute;
+    right: 4px;
+    box-shadow: 0 0 8px rgba(245, 243, 206, 0.6);
+  }
+  /* Crescent mask */
+  .theme-toggle__moon::after {
     content: '';
     position: absolute;
     width: 22px;
     height: 22px;
+    background-color: #1d2c4e;
     border-radius: 50%;
-    background-color: #1a2744;
     top: -5px;
     left: 5px;
-    transition: opacity 0.5s ease;
-    opacity: 0;
   }
-  .theme-toggle.is-dark .theme-toggle__slider::after {
-    opacity: 1;
+
+  /* Stars */
+  .theme-toggle__stars {
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    fill: #fff;
+    width: 20px;
+    height: auto;
   }
   picture {
     display: block;
