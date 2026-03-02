@@ -58,15 +58,15 @@ php bin/console doctrine:schema:drop --force --env=prod || true
 php bin/console doctrine:schema:create --env=prod
 php bin/console doctrine:fixtures:load --no-interaction --env=prod
 
-# Step 6: Clear cache & compile assets
-echo -e "${YELLOW}[6/7] Compilation des assets...${NC}"
+# Step 6: Clear cache & build assets
+echo -e "${YELLOW}[6/7] Build des assets...${NC}"
 php bin/console cache:clear --env=prod
-php bin/console asset-map:compile --env=prod
 php bin/console importmap:install --env=prod
-
-# Step 7: Build Tailwind
-echo -e "${YELLOW}[7/7] Build Tailwind CSS...${NC}"
 php bin/console tailwind:build --minify
+
+# Step 7: Compile asset map (MUST be last — bundles final JS + CSS)
+echo -e "${YELLOW}[7/7] Compilation de l'asset map...${NC}"
+php bin/console asset-map:compile --env=prod
 
 # Fix var permissions again after builds
 sudo chown -R mehdi:mehdi "$TARGET_DIR/var"
