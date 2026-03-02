@@ -80,7 +80,9 @@ jobs:
         ls -la public/assets/ 2>/dev/null | head -10 || echo "public/assets/ is EMPTY"
 
     - name: Start PHP Server
-      run: APP_ENV=test php -S localhost:8000 -t public public/index.php > var/log/php-server.log 2>&1 &
+      run: |
+        mkdir -p var/log
+        APP_ENV=test php -S localhost:8000 -t public public/index.php > var/log/php-server.log 2>&1 &
 
     - name: Wait for server
       run: |
