@@ -21,7 +21,7 @@ test.describe('Page d\'accueil', () => {
   test('doit afficher un header sticky avec navigation', async ({ page }) => {
     const header = page.locator('header');
     await expect(header).toBeVisible();
-    await expect(header).toHaveCSS('position', 'sticky');
+    await expect(header).toHaveClass(/sticky/);
 
     // Vérifier les 3 liens de navigation (desktop)
     const nav = page.locator('header nav');

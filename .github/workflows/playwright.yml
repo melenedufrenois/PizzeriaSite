@@ -77,13 +77,6 @@ jobs:
     - name: Warmup cache
       run: php bin/console cache:warmup --env=test
 
-    - name: Pre-flight check
-      run: |
-        php bin/console debug:router --env=test | head -20
-        php bin/console about --env=test | head -30
-        echo "--- Checking public/assets ---"
-        ls -la public/assets/ 2>/dev/null | head -10 || echo "public/assets/ is EMPTY"
-
     - name: Start PHP Server
       run: |
         mkdir -p var/log
@@ -92,27 +85,13 @@ jobs:
     - name: Wait for server
       run: |
         for i in $(seq 1 30); do
-          STATUS=$(curl -s -o /tmp/response.html -w '%{http_code}' http://localhost:8000/ 2>/dev/null || echo "000")
+          STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8000/ 2>/dev/null || echo "000")
           echo "Attempt $i: HTTP $STATUS"
           if [ "$STATUS" = "200" ]; then exit 0; fi
-          if [ "$STATUS" = "500" ] && [ "$i" = "3" ]; then
-            echo "=== RESPONSE BODY (attempt 3) ==="
-            cat /tmp/response.html 2>/dev/null | grep -oP '<title>.*?</title>' || true
-            cat /tmp/response.html 2>/dev/null | grep -oP 'exception-message[^<]*<[^<]*<[^<]*' | head -5 || true
-            cat /tmp/response.html 2>/dev/null | grep -i 'error\|exception\|fatal' | head -10 || true
-            echo "=== SYMFONY LOG ==="
-            cat var/log/test.log 2>/dev/null | tail -30 || echo "No test.log"
-            echo "=== PHP SERVER LOG ==="
-            cat var/log/php-server.log 2>/dev/null | tail -20 || echo "No php-server.log"
-          fi
           sleep 2
         done
-        echo "=== Server STILL failing. Full response: ==="
-        cat /tmp/response.html 2>/dev/null | head -200 || true
-        echo "=== FULL SYMFONY LOG ==="
-        cat var/log/test.log 2>/dev/null || echo "No test.log"
-        echo "=== FULL PHP SERVER LOG ==="
-        cat var/log/php-server.log 2>/dev/null || echo "No php-server.log"
+        echo "Server failed to start"
+        cat var/log/php-server.log 2>/dev/null | tail -20 || true
         exit 1
 
     - name: Run Playwright tests
