@@ -13,8 +13,6 @@
   --font-body: "Inter", sans-serif;
 }
 
-/* ── Dark mode: override theme color tokens ── */
-/* System preference (active when no explicit user choice) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --color-pieza-cream: #1c1c1c;
@@ -40,11 +38,9 @@
     @apply bg-pieza-cream font-body;
     transition: background-color 0.2s ease, color 0.2s ease;
   }
-  /* Ensure text color follows theme in dark mode */
   body, h1, h2, h3, h4, h5, h6, p {
     @apply text-pieza-green;
   }
-  /* Override Turbo Drive's default blue progress bar */
   .turbo-progress-bar {
     background-color: #FF6B4A !important;
     height: 3px;
@@ -52,9 +48,6 @@
 }
 
 @layer components {
-  /* Animation pour transformer le cercle en carré progressivement */
-
-  /* Skeleton loading animation */
   .skeleton-pulse {
     @apply relative overflow-hidden bg-pieza-green/10 rounded-3xl;
   }
@@ -85,12 +78,30 @@
     100% { width: 95%; }
   }
 
-  /* Theme selector */
   .theme-selector {
     @apply inline-flex items-center gap-2 text-sm;
   }
   .theme-selector select {
     @apply bg-pieza-cream text-pieza-green border border-pieza-green/30 rounded-full px-3 py-1 cursor-pointer text-sm font-body;
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  picture {
+    display: block;
+    overflow: hidden;
+  }
+
+  picture img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    transition: filter 0.3s ease;
+  }
+
+  .data-saver-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 0.85rem;
+    cursor: pointer;
   }
 }
