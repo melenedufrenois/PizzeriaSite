@@ -60,4 +60,29 @@
     50% { width: 70%; }
     100% { width: 95%; }
   }
+
+  /* ── Responsive image placeholder (US16) ─────────────────────────────────── */
+
+  picture {
+    display: block;
+    overflow: hidden;
+  }
+
+  /* Intrinsic width/height on <img> prevents CLS before the real image loads.
+     The blur-up transition is driven by the responsive-image Stimulus controller. */
+  picture img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    transition: filter 0.3s ease;
+  }
+
+  /* Data-saver toggle button */
+  .data-saver-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
 }

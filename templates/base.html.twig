@@ -19,6 +19,16 @@
         {% endblock %}
     </head>
     <body class="min-h-screen font-body antialiased" data-controller="navigation-feedback">
+        {# Data-saver toggle: lets users opt in/out of bandwidth-saving mode. #}
+        <button type="button"
+                class="data-saver-toggle"
+                data-controller="responsive-image"
+                data-action="click->responsive-image#toggleSaveData"
+                title="{{ save_data|default(false) ? 'Désactiver' : 'Activer' }} le mode Économie de données"
+                aria-pressed="{{ save_data|default(false) ? 'true' : 'false' }}">
+            🔋 {{ save_data|default(false) ? 'Économie de données : ON' : 'Économie de données : OFF' }}
+        </button>
+
         {% block body %}{% endblock %}
     </body>
 </html>
