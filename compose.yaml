@@ -33,6 +33,16 @@ services:
     depends_on:
       - database
 
+  mailpit:
+    image: axllent/mailpit
+    container_name: pizzeria_mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
 volumes:
 ###> doctrine/doctrine-bundle ###
   database_data:

@@ -38,6 +38,8 @@ docker compose exec php php bin/console tailwind:build
 |---------|-----|-------------|
 | **Application** | http://localhost:8000 | Site Pizzeria |
 | **phpMyAdmin** | http://localhost:8080 | Administration BDD |
+| **Page accès** | http://localhost:8000/acces | Carte interactive & itinéraire |
+| **Mailpit** | http://localhost:8025 | Inbox email locale (dev) |
 
 ### Identifiants BDD
 
@@ -159,8 +161,35 @@ La configuration Playwright se trouve dans `playwright.config.ts`. Par défaut :
 
 Voir le fichier `.env` pour configurer :
 - `DATABASE_URL` : URL de connexion à la base de données
-- `MAILER_DSN` : Configuration du service de mail
+- `MAILER_DSN` : Configuration SMTP du service de mail
 - `APP_ENV` : Environnement (dev/prod)
+- `GOOGLE_MAPS_API_KEY` : Clé API Google Maps Embed
+- `PIZZERIA_MAP_LATITUDE` : Latitude de la pizzeria
+- `PIZZERIA_MAP_LONGITUDE` : Longitude de la pizzeria
+- `PIZZERIA_MAP_ADDRESS` : Libellé de l’adresse affichée sur la page d’accès
+- `CONTACT_DEFAULT_RECIPIENT` : Destinataire email par défaut du formulaire de contact
+- `CONTACT_SENDER_EMAIL` : Expéditeur utilisé pour les emails de contact
+
+Par environnement :
+- `.env.dev` : `MAILER_DSN=smtp://127.0.0.1:1025` (Mailpit local)
+- `.env.prod` : `MAILER_DSN=smtp://...` (SMTP réel de production)
+
+## ✉️ Formulaire de contact
+
+- Route : `GET|POST /contact`
+- Types de demande : réservation, devis, question, événement
+- Validation obligatoire côté front et côté back
+- Envoi email via Symfony Mailer
+- En `dev`, les emails sont envoyés immédiatement vers Mailpit (sans worker Messenger à lancer)
+- En `prod`, la route mail reste asynchrone via Messenger (`async`)
+
+### Destinataire configurable en base de données
+
+Le destinataire peut être modifié sans redéploiement :
+
+```bash
+php bin/console app:contact:set-recipient contact@otrexemple.fr
+```
 
 ## 👥 Contributeurs
 

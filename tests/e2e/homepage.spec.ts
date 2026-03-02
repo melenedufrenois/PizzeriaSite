@@ -1,78 +1,63 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Tests E2E pour la page d'accueil de la Pizzeria O'Trari
+ * Tests E2E — Page d'accueil
+ * Vérifie le chargement, la structure principale et le contenu visible.
  */
 test.describe('Page d\'accueil', () => {
-  
+
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
-  test('doit charger la page d\'accueil correctement', async ({ page }) => {
-    // Vérifier que la page se charge
+  test('doit charger avec le bon titre et le logo', async ({ page }) => {
     await expect(page).toHaveTitle(/O'Trari/);
+
+    const logo = page.locator('header a.font-display');
+    await expect(logo).toBeVisible();
+    await expect(logo).toHaveText("O'Trari");
   });
 
-  test('doit afficher le logo O\'Trari', async ({ page }) => {
-    // Vérifier la présence du logo dans le header
-    const logo = page.locator('header .font-display').first();
-    await expect(logo).toHaveText('O\'Trari');
-  });
-
-  test('doit avoir un header fixe avec navigation', async ({ page }) => {
-    // Vérifier que le header existe et est fixe
+  test('doit afficher un header sticky avec navigation', async ({ page }) => {
     const header = page.locator('header');
     await expect(header).toBeVisible();
-    
-    // Vérifier la classe fixed
-    await expect(header).toHaveClass(/fixed/);
+    await expect(header).toHaveClass(/sticky/);
+
+    // Vérifier les 3 liens de navigation (desktop)
+    const nav = page.locator('header nav');
+    await expect(nav.locator('a', { hasText: 'La Carte' })).toHaveAttribute('href', '/carte');
+    await expect(nav.locator('a', { hasText: 'À propos' })).toHaveAttribute('href', '#about');
+    await expect(nav.locator('a', { hasText: 'Contact' })).toHaveAttribute('href', '#contact');
   });
 
-  test('doit avoir tous les liens de navigation principaux', async ({ page }) => {
-    // Vérifier les liens de navigation
-    const menuLink = page.locator('nav a[href="#menu"]');
-    const aboutLink = page.locator('nav a[href="#about"]');
-    const contactLink = page.locator('nav a[href="#contact"]');
-    
-    await expect(menuLink).toBeVisible();
-    await expect(aboutLink).toBeVisible();
-    await expect(contactLink).toBeVisible();
-    
-    await expect(menuLink).toHaveText('Menu');
-    await expect(aboutLink).toHaveText('À propos');
-    await expect(contactLink).toHaveText('Contact');
+  test('doit afficher la section hero avec le titre principal', async ({ page }) => {
+    const h1 = page.locator('h1');
+    await expect(h1).toBeVisible();
+    await expect(h1).toContainText('PIZZA');
   });
 
-  test('doit afficher la section hero', async ({ page }) => {
-    // Vérifier que la section hero est présente
-    const heroSection = page.locator('.min-h-screen').first();
-    await expect(heroSection).toBeVisible();
-  });
-
-  test('doit afficher la section menu avec le titre', async ({ page }) => {
-    // Vérifier la présence de la section menu
+  test('doit afficher la section menu avec des pizzas', async ({ page }) => {
     const menuSection = page.locator('#menu');
     await expect(menuSection).toBeVisible();
-    
-    // Vérifier le titre de la section
-    const title = menuSection.locator('h2').first();
-    await expect(title).toContainText('LE MEILLEUR');
+
+    const menuTitle = menuSection.locator('h2').first();
+    await expect(menuTitle).toContainText('LE MEILLEUR');
+
+    // Exactement 4 cartes de pizza affichées
+    const pizzaCards = menuSection.locator('.grid > div');
+    await expect(pizzaCards).toHaveCount(4);
   });
 
-  test('doit afficher le footer', async ({ page }) => {
-    // Vérifier que le footer est présent
-    const footer = page.locator('footer, [class*="footer"]').last();
+  test('doit afficher le footer avec les infos de contact', async ({ page }) => {
+    const footer = page.locator('footer#contact');
     await expect(footer).toBeVisible();
+    await expect(footer).toContainText("O'Trari");
+    await expect(footer).toContainText('Roubaix');
   });
 
-  test('doit avoir une mise en page responsive', async ({ page }) => {
-    // Vérifier sur desktop
-    await page.setViewportSize({ width: 1920, height: 1080 });
-    await expect(page.locator('header')).toBeVisible();
-    
-    // Vérifier sur mobile
+  test('doit être responsive — le header reste visible en mobile', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await expect(page.locator('header')).toBeVisible();
+    await expect(page.locator('h1')).toBeVisible();
   });
 });

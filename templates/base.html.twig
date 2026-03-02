@@ -18,7 +18,7 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body class="min-h-screen font-body antialiased">
+    <body class="min-h-screen font-body antialiased" data-controller="navigation-feedback">
         {% block body %}{% endblock %}
     </body>
 </html>
