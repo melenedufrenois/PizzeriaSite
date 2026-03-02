@@ -4,6 +4,15 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        {# Apply saved theme early to avoid flash of wrong theme #}
+        <script>
+            (function () {
+                var savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                }
+            }());
+        </script>
         {% block stylesheets %}
         {% endblock %}
 
@@ -12,6 +21,16 @@
         {% endblock %}
     </head>
     <body>
+        <div data-controller="theme" style="position:fixed;top:1rem;right:1rem;z-index:1000;">
+            <label class="theme-selector">
+                🎨
+                <select data-theme-target="selector" data-action="change->theme#change" aria-label="Thème">
+                    <option value="system">Système</option>
+                    <option value="light">Clair</option>
+                    <option value="dark">Sombre</option>
+                </select>
+            </label>
+        </div>
         {% block body %}{% endblock %}
     </body>
 </html>
