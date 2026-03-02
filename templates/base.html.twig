@@ -1,9 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}O'Trari - Pizzeria{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🍕</text></svg>">
+        <meta property="og:image" content="https://bolt.new/static/og_default.png">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
         {# Apply saved theme early to avoid flash of wrong theme #}
         <script>
             (function () {
@@ -14,23 +21,13 @@
             }());
         </script>
         {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         {% endblock %}
-
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
-        <div data-controller="theme" style="position:fixed;top:1rem;right:1rem;z-index:1000;">
-            <label class="theme-selector">
-                🎨
-                <select data-theme-target="selector" data-action="change->theme#change" aria-label="Thème">
-                    <option value="system">Système</option>
-                    <option value="light">Clair</option>
-                    <option value="dark">Sombre</option>
-                </select>
-            </label>
-        </div>
+    <body class="min-h-screen font-body antialiased" data-controller="navigation-feedback">
         {% block body %}{% endblock %}
     </body>
 </html>
