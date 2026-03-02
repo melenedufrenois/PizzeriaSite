@@ -9,6 +9,16 @@
             <a href="#about" class="hover:text-pieza-orange transition-colors">À propos</a>
             <a href="{{ path('app_access') }}" class="hover:text-pieza-orange transition-colors">Accès</a>
             <a href="{{ path('app_contact') }}" class="hover:text-pieza-orange transition-colors">Contact</a>
+            <div data-controller="theme">
+                <label class="theme-selector" aria-label="Thème">
+                    🎨
+                    <select data-theme-target="selector" data-action="change->theme#change" aria-label="Choisir le thème">
+                        <option value="system">Système</option>
+                        <option value="light">Clair</option>
+                        <option value="dark">Sombre</option>
+                    </select>
+                </label>
+            </div>
         </nav>
 
         {# <button class="bg-pieza-green text-pieza-cream px-6 py-3 rounded-full font-body font-medium hover:bg-pieza-orange transition-colors flex items-center gap-2">

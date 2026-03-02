@@ -13,14 +13,34 @@
   --font-body: "Inter", sans-serif;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-pieza-cream: #1c1c1c;
+    --color-pieza-green: #a8c5a4;
+    --color-pieza-orange: #ff8a65;
+  }
+}
+/* Explicit user choice */
+:root[data-theme="dark"] {
+  --color-pieza-cream: #1c1c1c;
+  --color-pieza-green: #a8c5a4;
+  --color-pieza-orange: #ff8a65;
+}
+
+/* ── Custom dark variant for dark: utilities ── */
+@custom-variant dark (&:is([data-theme="dark"] *));
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
   body {
     @apply bg-pieza-cream font-body;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
-  /* Override Turbo Drive's default blue progress bar */
+  body, h1, h2, h3, h4, h5, h6, p {
+    @apply text-pieza-green;
+  }
   .turbo-progress-bar {
     background-color: #FF6B4A !important;
     height: 3px;
@@ -28,9 +48,6 @@
 }
 
 @layer components {
-  /* Animation pour transformer le cercle en carré progressivement */
-
-  /* Skeleton loading animation */
   .skeleton-pulse {
     @apply relative overflow-hidden bg-pieza-green/10 rounded-3xl;
   }
@@ -61,15 +78,18 @@
     100% { width: 95%; }
   }
 
-  /* ── Responsive image placeholder (US16) ─────────────────────────────────── */
-
+  .theme-selector {
+    @apply inline-flex items-center gap-2 text-sm;
+  }
+  .theme-selector select {
+    @apply bg-pieza-cream text-pieza-green border border-pieza-green/30 rounded-full px-3 py-1 cursor-pointer text-sm font-body;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
   picture {
     display: block;
     overflow: hidden;
   }
 
-  /* Intrinsic width/height on <img> prevents CLS before the real image loads.
-     The blur-up transition is driven by the responsive-image Stimulus controller. */
   picture img {
     display: block;
     max-width: 100%;
@@ -77,7 +97,6 @@
     transition: filter 0.3s ease;
   }
 
-  /* Data-saver toggle button */
   .data-saver-toggle {
     display: inline-flex;
     align-items: center;
