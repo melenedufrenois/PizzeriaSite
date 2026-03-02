@@ -55,13 +55,19 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps chromium
 
+    - name: Install importmap vendor assets
+      run: php bin/console importmap:install
+
     - name: Build Tailwind CSS
-      run: php bin/console tailwind:build
+      run: php bin/console tailwind:build --env=test
 
     - name: Setup test database
       run: |
         php bin/console doctrine:schema:create --env=test
         php bin/console doctrine:fixtures:load --env=test --no-interaction
+
+    - name: Warmup cache
+      run: php bin/console cache:warmup --env=test
 
     - name: Start PHP Server
       run: APP_ENV=test php -S localhost:8000 -t public public/index.php &
