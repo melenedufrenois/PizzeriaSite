@@ -103,7 +103,7 @@ test.describe('Page Carte — Sous-filtres', () => {
     await page.goto('/carte?category=pizza');
 
     // Les sous-filtres doivent apparaître
-    const subFilters = page.locator('.flex.flex-wrap.justify-center.gap-2 a');
+    const subFilters = page.locator('[data-testid="sub-filters"] a');
     await expect(subFilters).toHaveCount(3); // Tous + Tomate + Crème
 
     await expect(subFilters.filter({ hasText: 'Tous' })).toBeVisible();
@@ -113,7 +113,7 @@ test.describe('Page Carte — Sous-filtres', () => {
 
   test('doit filtrer les pizzas par base Tomate', async ({ page }) => {
     await page.goto('/carte?category=pizza');
-    await page.locator('.flex.flex-wrap.justify-center.gap-2 a', { hasText: 'Tomate' }).click();
+    await page.locator('[data-testid="sub-filters"] a', { hasText: 'Tomate' }).click();
 
     await expect(page).toHaveURL(/filter=tomate/);
     const cards = page.locator('main section .grid > div');
@@ -127,7 +127,7 @@ test.describe('Page Carte — Sous-filtres', () => {
 
   test('doit filtrer les pizzas par base Crème', async ({ page }) => {
     await page.goto('/carte?category=pizza');
-    await page.locator('.flex.flex-wrap.justify-center.gap-2 a', { hasText: 'Crème' }).click();
+    await page.locator('[data-testid="sub-filters"] a', { hasText: 'Crème' }).click();
 
     await expect(page).toHaveURL(/filter=creme/);
     const cards = page.locator('main section .grid > div');
@@ -141,7 +141,7 @@ test.describe('Page Carte — Sous-filtres', () => {
   test('doit afficher les sous-filtres pour les boissons (Softs / Alcools)', async ({ page }) => {
     await page.goto('/carte?category=boisson');
 
-    const subFilters = page.locator('.flex.flex-wrap.justify-center.gap-2 a');
+    const subFilters = page.locator('[data-testid="sub-filters"] a');
     await expect(subFilters).toHaveCount(3); // Tous + Softs + Alcools
     await expect(subFilters.filter({ hasText: 'Softs' })).toBeVisible();
     await expect(subFilters.filter({ hasText: 'Alcools' })).toBeVisible();
@@ -150,7 +150,7 @@ test.describe('Page Carte — Sous-filtres', () => {
   test('doit afficher les sous-filtres pour les pâtes', async ({ page }) => {
     await page.goto('/carte?category=pates');
 
-    const subFilters = page.locator('.flex.flex-wrap.justify-center.gap-2 a');
+    const subFilters = page.locator('[data-testid="sub-filters"] a');
     await expect(subFilters).toHaveCount(5); // Tous + Viande + Végétarienne + Poisson + Fromage
     await expect(subFilters.filter({ hasText: 'Viande' })).toBeVisible();
     await expect(subFilters.filter({ hasText: 'Végétarienne' })).toBeVisible();
@@ -161,7 +161,7 @@ test.describe('Page Carte — Sous-filtres', () => {
   test('doit afficher les sous-filtres pour les desserts', async ({ page }) => {
     await page.goto('/carte?category=dessert');
 
-    const subFilters = page.locator('.flex.flex-wrap.justify-center.gap-2 a');
+    const subFilters = page.locator('[data-testid="sub-filters"] a');
     await expect(subFilters).toHaveCount(4); // Tous + Classique + Chocolat + Glacé
     await expect(subFilters.filter({ hasText: 'Classique' })).toBeVisible();
     await expect(subFilters.filter({ hasText: 'Chocolat' })).toBeVisible();
@@ -174,7 +174,7 @@ test.describe('Page Carte — Sous-filtres', () => {
     await expect(page.locator('main section .grid > div')).toHaveCount(7);
 
     // Cliquer sur "Tous"
-    await page.locator('.flex.flex-wrap.justify-center.gap-2 a', { hasText: 'Tous' }).click();
+    await page.locator('[data-testid="sub-filters"] a', { hasText: 'Tous' }).click();
     await expect(page).toHaveURL(/category=pizza/);
     await expect(page.locator('main section .grid > div')).toHaveCount(12);
   });

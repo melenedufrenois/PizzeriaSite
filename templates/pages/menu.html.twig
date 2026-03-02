@@ -46,7 +46,7 @@
 
             {# Context-specific Filters (only when category is selected) #}
             {% if activeCategory and filters|length > 0 %}
-            <div class="flex flex-wrap justify-center gap-2 mb-8">
+            <div class="flex flex-wrap justify-center gap-2 mb-8" data-testid="sub-filters">
                 <a 
                     href="{{ path('app_menu', {category: activeCategory}) }}" 
                     class="px-4 py-2 rounded-full font-body text-sm transition-all {{ activeFilter is null ? 'bg-pieza-orange text-pieza-cream' : 'bg-pieza-orange/20 text-pieza-orange hover:bg-pieza-orange/40' }}"
@@ -80,6 +80,65 @@
                     {% endfor %}
                 </div>
             </div>
+
+            {# Dietary Filters #}
+            {% if availableDiets|length > 0 %}
+            <div class="flex flex-wrap justify-center items-center gap-2 mb-8">
+                {% for dietKey, diet in availableDiets %}
+                    {% set isActive = dietKey in activeRegimes %}
+                    {# Toggle: add or remove this diet #}
+                    {% if isActive %}
+                        {% set newRegimes = activeRegimes|filter(v => v != dietKey) %}
+                    {% else %}
+                        {% set newRegimes = activeRegimes|merge([dietKey]) %}
+                    {% endif %}
+                    {# Build query params preserving other filters #}
+                    {% set params = {} %}
+                    {% if activeCategory %}{% set params = params|merge({category: activeCategory}) %}{% endif %}
+                    {% if activeFilter %}{% set params = params|merge({filter: activeFilter}) %}{% endif %}
+                    {% for s in activeSans %}
+                        {% set params = params|merge({('sans[' ~ loop.index0 ~ ']'): s}) %}
+                    {% endfor %}
+                    {% for r in newRegimes %}
+                        {% set params = params|merge({('regime[' ~ loop.index0 ~ ']'): r}) %}
+                    {% endfor %}
+                    <a 
+                        href="{{ path('app_menu', params) }}"
+                        class="px-4 py-2 rounded-full font-body text-sm transition-all {{ isActive ? 'bg-pieza-orange text-pieza-cream' : 'bg-pieza-orange/20 text-pieza-orange hover:bg-pieza-orange/40' }}"
+                    >
+                        {{ diet.emoji }} {{ diet.label }}
+                    </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {# Allergen Exclusion Filters #}
+            {% if availableAllergens|length > 0 %}
+            <div class="flex flex-wrap justify-center items-center gap-2 mb-8">
+                {% for allergenKey, allergenLabel in availableAllergens %}
+                    {% set isActive = allergenKey in activeSans %}
+                    {# Build the new sans array: toggle the current allergen #}
+                    {% if isActive %}
+                        {% set newSans = activeSans|filter(v => v != allergenKey) %}
+                    {% else %}
+                        {% set newSans = activeSans|merge([allergenKey]) %}
+                    {% endif %}
+                    {# Build query params preserving other filters #}
+                    {% set params = {} %}
+                    {% if activeCategory %}{% set params = params|merge({category: activeCategory}) %}{% endif %}
+                    {% if activeFilter %}{% set params = params|merge({filter: activeFilter}) %}{% endif %}
+                    {% for s in newSans %}
+                        {% set params = params|merge({('sans[' ~ loop.index0 ~ ']'): s}) %}
+                    {% endfor %}
+                    {% for r in activeRegimes %}
+                        {% set params = params|merge({('regime[' ~ loop.index0 ~ ']'): r}) %}
+                    {% endfor %}
+                    <a href="{{ path('app_menu', params) }}" class="px-4 py-2 rounded-full font-body text-sm transition-all {{ isActive ? 'bg-pieza-orange text-pieza-cream' : 'bg-pieza-orange/20 text-pieza-orange hover:bg-pieza-orange/40' }}">
+                        Sans {{ allergenLabel }}
+                    </a>
+                {% endfor %}
+            </div>
+            {% endif %}
 
             {# Products Display - Grouped by Category #}
             <div data-navigation-feedback-target="content">
