@@ -3,32 +3,23 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Pizzeria{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🍕</text></svg>" type="image/svg+xml">
+        <title>{% block title %}O'Trari - Pizzeria{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22> <text y=%221.2em%22 font-size=%2296%22>🍕</text></svg>">
+        <meta property="og:image" content="https://bolt.new/static/og_default.png">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
         {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         {% endblock %}
-
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
+    <body class="min-h-screen font-body antialiased" data-controller="navigation-feedback">
         <a class="skip-link" href="#main-content">Aller au contenu principal</a>
-
-        <header role="banner">
-            {% block header %}{% endblock %}
-        </header>
-
-        <nav aria-label="Navigation principale">
-            {% block nav %}{% endblock %}
-        </nav>
-
-        <main id="main-content" tabindex="-1">
-            {% block body %}{% endblock %}
-        </main>
-
-        <footer role="contentinfo">
-            {% block footer %}{% endblock %}
-        </footer>
+        {% block body %}{% endblock %}
     </body>
 </html>

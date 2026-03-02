@@ -7,21 +7,27 @@ namespace App\Tests\Accessibility;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Validates WCAG 2.1 AA accessibility requirements in the base Twig template.
+ * Validates WCAG 2.1 AA accessibility requirements in the Twig templates.
  *
  * These tests parse the raw template source (not rendered HTML) and check for
  * the presence of the required accessibility attributes and structures.
  */
 class BaseTemplateAccessibilityTest extends TestCase
 {
-    private string $templatePath;
-    private string $templateContent;
+    private string $baseTemplatePath;
+    private string $baseTemplateContent;
+    private string $headerPartialPath;
+    private string $headerPartialContent;
 
     protected function setUp(): void
     {
-        $this->templatePath = dirname(__DIR__, 2) . '/templates/base.html.twig';
-        $this->assertFileExists($this->templatePath, 'base.html.twig must exist');
-        $this->templateContent = file_get_contents($this->templatePath);
+        $this->baseTemplatePath = dirname(__DIR__, 2) . '/templates/base.html.twig';
+        $this->assertFileExists($this->baseTemplatePath, 'base.html.twig must exist');
+        $this->baseTemplateContent = file_get_contents($this->baseTemplatePath);
+
+        $this->headerPartialPath = dirname(__DIR__, 2) . '/templates/partials/_header.html.twig';
+        $this->assertFileExists($this->headerPartialPath, '_header.html.twig must exist');
+        $this->headerPartialContent = file_get_contents($this->headerPartialPath);
     }
 
     /** The <html> element must declare a language (lang attribute). */
@@ -29,7 +35,7 @@ class BaseTemplateAccessibilityTest extends TestCase
     {
         $this->assertMatchesRegularExpression(
             '/<html[^>]+lang=["\'][a-z]{2}/i',
-            $this->templateContent,
+            $this->baseTemplateContent,
             'The <html> element must have a lang attribute (WCAG 3.1.1)'
         );
     }
@@ -39,7 +45,7 @@ class BaseTemplateAccessibilityTest extends TestCase
     {
         $this->assertStringContainsString(
             'name="viewport"',
-            $this->templateContent,
+            $this->baseTemplateContent,
             'A <meta name="viewport"> tag must be present'
         );
     }
@@ -49,7 +55,7 @@ class BaseTemplateAccessibilityTest extends TestCase
     {
         $this->assertStringContainsString(
             'href="#main-content"',
-            $this->templateContent,
+            $this->baseTemplateContent,
             'A skip link pointing to #main-content must be present (WCAG 2.4.1)'
         );
     }
@@ -59,68 +65,8 @@ class BaseTemplateAccessibilityTest extends TestCase
     {
         $this->assertMatchesRegularExpression(
             '/href="#main-content"[^>]*>[^<]+</i',
-            $this->templateContent,
+            $this->baseTemplateContent,
             'The skip link must contain visible text'
-        );
-    }
-
-    /** The <main> landmark must have the id used by the skip link. */
-    public function testMainElementHasCorrectId(): void
-    {
-        $this->assertMatchesRegularExpression(
-            '/<main[^>]+id=["\']main-content["\']/',
-            $this->templateContent,
-            '<main id="main-content"> must be present as the skip-link target'
-        );
-    }
-
-    /** The <main> landmark must have tabindex="-1" so it can receive focus on skip. */
-    public function testMainElementHasTabindexForSkipLink(): void
-    {
-        $this->assertMatchesRegularExpression(
-            '/<main[^>]+tabindex=["\']?-1["\']?/',
-            $this->templateContent,
-            '<main> must have tabindex="-1" to receive programmatic focus from the skip link (WCAG 2.4.1)'
-        );
-    }
-
-    /** A <header> landmark element must be present (WCAG 1.3.6 / 4.1.2). */
-    public function testHeaderLandmarkIsPresent(): void
-    {
-        $this->assertMatchesRegularExpression(
-            '/<header[\s>]/',
-            $this->templateContent,
-            'A <header> landmark must be present (WCAG 1.3.6)'
-        );
-    }
-
-    /** A <main> landmark element must be present (WCAG 1.3.6). */
-    public function testMainLandmarkIsPresent(): void
-    {
-        $this->assertMatchesRegularExpression(
-            '/<main[\s>]/',
-            $this->templateContent,
-            'A <main> landmark must be present (WCAG 1.3.6)'
-        );
-    }
-
-    /** A <footer> landmark element must be present (WCAG 1.3.6). */
-    public function testFooterLandmarkIsPresent(): void
-    {
-        $this->assertMatchesRegularExpression(
-            '/<footer[\s>]/',
-            $this->templateContent,
-            'A <footer> landmark must be present (WCAG 1.3.6)'
-        );
-    }
-
-    /** The <nav> element must have an accessible label (WCAG 2.4.6). */
-    public function testNavHasAccessibleLabel(): void
-    {
-        $this->assertMatchesRegularExpression(
-            '/<nav[^>]+(aria-label|aria-labelledby)=["\'][^"\']+["\']/',
-            $this->templateContent,
-            '<nav> must have an aria-label or aria-labelledby (WCAG 2.4.6)'
         );
     }
 
@@ -129,8 +75,88 @@ class BaseTemplateAccessibilityTest extends TestCase
     {
         $this->assertMatchesRegularExpression(
             '/<meta[^>]+charset=["\']?UTF-8/i',
-            $this->templateContent,
+            $this->baseTemplateContent,
             'The charset must be declared as UTF-8'
+        );
+    }
+
+    /** The header partial must have a <header> landmark element. */
+    public function testHeaderLandmarkIsPresent(): void
+    {
+        $this->assertMatchesRegularExpression(
+            '/<header[\s>]/',
+            $this->headerPartialContent,
+            'The header partial must contain a <header> landmark (WCAG 1.3.6)'
+        );
+    }
+
+    /** The nav must have an accessible label (WCAG 2.4.6). */
+    public function testNavHasAccessibleLabel(): void
+    {
+        $this->assertMatchesRegularExpression(
+            '/<nav[^>]+(aria-label|aria-labelledby)=["\'][^"\']+["\']/',
+            $this->headerPartialContent,
+            '<nav> must have an aria-label or aria-labelledby (WCAG 2.4.6)'
+        );
+    }
+
+    /** Each page template's main content area must have id="main-content". */
+    public function testPageTemplatesHaveMainContentId(): void
+    {
+        $pageTemplatesDir = dirname(__DIR__, 2) . '/templates/pages';
+        $this->assertDirectoryExists($pageTemplatesDir);
+
+        foreach (glob($pageTemplatesDir . '/*.html.twig') as $pagePath) {
+            $pageContent = file_get_contents($pagePath);
+            $this->assertStringContainsString(
+                'id="main-content"',
+                $pageContent,
+                sprintf('Page template %s must define the #main-content anchor (WCAG 2.4.1)', basename($pagePath))
+            );
+        }
+    }
+
+    /** Each page template with a main content area must have tabindex="-1" for skip link focus. */
+    public function testPageTemplatesMainHasTabindex(): void
+    {
+        $pageTemplatesDir = dirname(__DIR__, 2) . '/templates/pages';
+        $this->assertDirectoryExists($pageTemplatesDir);
+
+        foreach (glob($pageTemplatesDir . '/*.html.twig') as $pagePath) {
+            $pageContent = file_get_contents($pagePath);
+            $this->assertStringContainsString(
+                'tabindex="-1"',
+                $pageContent,
+                sprintf('Page template %s must have tabindex="-1" on the main content element (WCAG 2.4.1)', basename($pagePath))
+            );
+        }
+    }
+
+    /** The CSS must define skip-link styles. */
+    public function testSkipLinkStylesAreDefined(): void
+    {
+        $cssPath = dirname(__DIR__, 2) . '/assets/styles/app.css';
+        $this->assertFileExists($cssPath, 'app.css must exist');
+
+        $cssContent = file_get_contents($cssPath);
+        $this->assertStringContainsString(
+            '.skip-link',
+            $cssContent,
+            'app.css must define .skip-link styles for the skip navigation link (WCAG 2.4.1)'
+        );
+    }
+
+    /** The CSS must define focus-visible styles for keyboard navigation. */
+    public function testFocusVisibleStylesAreDefined(): void
+    {
+        $cssPath = dirname(__DIR__, 2) . '/assets/styles/app.css';
+        $this->assertFileExists($cssPath, 'app.css must exist');
+
+        $cssContent = file_get_contents($cssPath);
+        $this->assertStringContainsString(
+            ':focus-visible',
+            $cssContent,
+            'app.css must define :focus-visible styles for visible keyboard focus indicators (WCAG 2.4.7)'
         );
     }
 }

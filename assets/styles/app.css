@@ -1,54 +1,84 @@
-/* ============================================================
-   Base styles
-   ============================================================ */
-body {
-    background-color: #e8f4fc;
-    color: #1a1a1a;
-    font-family: sans-serif;
-    margin: 0;
+@import "tailwindcss";
+
+/* Inclure les templates Twig pour que les classes (y compris arbitraires comme text-[300px]) soient détectées */
+@source "../../templates";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lilita+One&display=swap');
+
+@theme {
+  --color-pieza-green: #2D3B2F;
+  --color-pieza-cream: #F5F1E8;
+  --color-pieza-orange: #FF6B4A;
+  --font-display: "Lilita One", cursive;
+  --font-body: "Inter", sans-serif;
 }
 
-/* ============================================================
-   Skip link – visually hidden until focused
-   ============================================================ */
-.skip-link {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-    z-index: 1000;
-    background: #000;
-    color: #fff;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    font-weight: bold;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-pieza-cream font-body;
+  }
+  /* Override Turbo Drive's default blue progress bar */
+  .turbo-progress-bar {
+    background-color: #FF6B4A !important;
+    height: 3px;
+  }
 }
 
-.skip-link:focus {
-    top: 0;
-    left: 0;
+@layer components {
+  /* Animation pour transformer le cercle en carré progressivement */
+
+  /* Skeleton loading animation */
+  .skeleton-pulse {
+    @apply relative overflow-hidden bg-pieza-green/10 rounded-3xl;
+  }
+  .skeleton-pulse::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 100%
+    );
+    animation: skeleton-shimmer 1.5s infinite;
+  }
+  @keyframes skeleton-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Loader bar at top of page */
+  .turbo-progress-bar {
+    @apply fixed top-0 left-0 h-1 bg-pieza-orange z-50;
+    animation: turbo-progress 1.2s ease-in-out infinite;
+  }
+  @keyframes turbo-progress {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 95%; }
+  }
+
+  /* Skip link – visually hidden until focused (WCAG 2.4.1) */
+  .skip-link {
+    @apply absolute -top-full left-0 z-50 bg-pieza-green text-pieza-cream px-4 py-2 font-body font-semibold no-underline;
+  }
+  .skip-link:focus {
+    @apply top-0;
+  }
 }
 
-/* ============================================================
-   Visible focus indicator (WCAG 2.4.7 / 2.4.11)
-   ============================================================ */
-*:focus-visible {
-    outline: 3px solid #005fcc;
+@layer base {
+  /* Visible focus indicator for keyboard navigation (WCAG 2.4.7 / 2.4.11) */
+  *:focus-visible {
+    outline: 3px solid #FF6B4A;
     outline-offset: 3px;
-}
+  }
 
-/* Remove default outline only when focus-visible is not needed
-   (e.g. mouse click), while keeping it for keyboard navigation */
-*:focus:not(:focus-visible) {
+  /* Suppress outline on mouse click while keeping it for keyboard */
+  *:focus:not(:focus-visible) {
     outline: none;
-}
-
-/* ============================================================
-   Links – ensure sufficient contrast (WCAG 1.4.3 AA)
-   ============================================================ */
-a {
-    color: #005fcc;
-}
-
-a:visited {
-    color: #5b2d8e;
+  }
 }

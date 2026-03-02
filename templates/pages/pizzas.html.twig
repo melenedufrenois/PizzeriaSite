@@ -1,0 +1,266 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Pizzas - O'Trari{% endblock %}
+
+{% block body %}
+<div class="min-h-screen font-body bg-pieza-cream">
+    {% include 'partials/_header.html.twig' %}
+
+    <main class="py-12 px-6" id="main-content" tabindex="-1">
+        <div class="max-w-7xl mx-auto">
+            {# Hero Section #}
+            <div class="mb-12 text-center">
+                <h1 class="font-display text-5xl md:text-7xl text-pieza-green mb-4">
+                    NOS <span class="text-pieza-orange">PIZZAS</span>
+                </h1>
+                <p class="font-body text-lg text-pieza-green/70 max-w-2xl mx-auto">
+                    Découvrez notre sélection de pizzas artisanales, préparées avec des ingrédients frais et de qualité.
+                </p>
+            </div>
+
+            {# Filter Button and Panel #}
+            <div class="mb-8" data-controller="filter">
+                {# Filter Toggle Button #}
+                <div class="flex justify-center mb-6">
+                    <button 
+                        type="button" 
+                        data-action="click->filter#toggle"
+                        class="flex items-center gap-3 bg-pieza-green text-pieza-cream px-8 py-4 rounded-full font-body font-semibold hover:bg-pieza-orange transition-all duration-300 shadow-lg hover:shadow-xl"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        <span>Filtrer les pizzas</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-300" data-filter-target="arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                </div>
+
+                {# Filter Panel #}
+                <div 
+                    data-filter-target="panel" 
+                    class="hidden bg-white border-2 border-pieza-green rounded-3xl p-8 shadow-xl max-w-4xl mx-auto transition-all duration-300"
+                >
+                    <form method="get" action="{{ path('app_pizzas') }}" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {# Filter by Base #}
+                            <div>
+                                <label class="block font-body font-semibold text-pieza-green mb-3 text-sm uppercase tracking-wide">
+                                    Base
+                                </label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <input 
+                                            type="radio" 
+                                            name="base" 
+                                            value="" 
+                                            {{ activeBase is null ? 'checked' : '' }}
+                                            class="w-5 h-5 text-pieza-orange border-pieza-green focus:ring-pieza-orange"
+                                        >
+                                        <span class="font-body text-pieza-green group-hover:text-pieza-orange transition-colors">Toutes les bases</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <input 
+                                            type="radio" 
+                                            name="base" 
+                                            value="tomate" 
+                                            {{ activeBase == 'tomate' ? 'checked' : '' }}
+                                            class="w-5 h-5 text-pieza-orange border-pieza-green focus:ring-pieza-orange"
+                                        >
+                                        <span class="font-body text-pieza-green group-hover:text-pieza-orange transition-colors">🍅 Base tomate</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <input 
+                                            type="radio" 
+                                            name="base" 
+                                            value="creme" 
+                                            {{ activeBase == 'creme' ? 'checked' : '' }}
+                                            class="w-5 h-5 text-pieza-orange border-pieza-green focus:ring-pieza-orange"
+                                        >
+                                        <span class="font-body text-pieza-green group-hover:text-pieza-orange transition-colors">🥛 Base crème fraîche</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {# Filter by Type #}
+                            <div>
+                                <label class="block font-body font-semibold text-pieza-green mb-3 text-sm uppercase tracking-wide">
+                                    Type
+                                </label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <input 
+                                            type="radio" 
+                                            name="type" 
+                                            value="" 
+                                            {{ activeType is null ? 'checked' : '' }}
+                                            class="w-5 h-5 text-pieza-orange border-pieza-green focus:ring-pieza-orange"
+                                        >
+                                        <span class="font-body text-pieza-green group-hover:text-pieza-orange transition-colors">Tous les types</span>
+                                    </label>
+                                    {% for type in types %}
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <input 
+                                            type="radio" 
+                                            name="type" 
+                                            value="{{ type }}" 
+                                            {{ activeType == type ? 'checked' : '' }}
+                                            class="w-5 h-5 text-pieza-orange border-pieza-green focus:ring-pieza-orange"
+                                        >
+                                        <span class="font-body text-pieza-green group-hover:text-pieza-orange transition-colors capitalize">{{ type }}</span>
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            {# Filter by Ingredient #}
+                            <div>
+                                <label class="block font-body font-semibold text-pieza-green mb-3 text-sm uppercase tracking-wide">
+                                    Ingrédient
+                                </label>
+                                <select 
+                                    name="ingredient" 
+                                    class="w-full px-4 py-3 border-2 border-pieza-green rounded-xl font-body text-pieza-green focus:outline-none focus:border-pieza-orange transition-colors bg-white"
+                                >
+                                    <option value="">Tous les ingrédients</option>
+                                    {% for ingredient in ingredients %}
+                                    <option value="{{ ingredient }}" {{ activeIngredient == ingredient ? 'selected' : '' }}>
+                                        {{ ingredient }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        {# Filter Actions #}
+                        <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4 border-t border-pieza-green/20">
+                            <button 
+                                type="submit" 
+                                class="bg-pieza-orange text-pieza-cream px-8 py-3 rounded-full font-body font-semibold hover:bg-pieza-green transition-colors flex items-center justify-center gap-2"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                Appliquer les filtres
+                            </button>
+                            <a 
+                                href="{{ path('app_pizzas') }}" 
+                                class="bg-transparent border-2 border-pieza-green text-pieza-green px-8 py-3 rounded-full font-body font-semibold hover:bg-pieza-green hover:text-pieza-cream transition-colors text-center"
+                            >
+                                Réinitialiser
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                {# Active Filters Display #}
+                {% if activeBase or activeType or activeIngredient %}
+                <div class="flex flex-wrap justify-center gap-2 mt-4">
+                    {% if activeBase %}
+                    <span class="inline-flex items-center gap-2 bg-pieza-orange/20 text-pieza-orange px-4 py-2 rounded-full font-body text-sm">
+                        Base: {{ activeBase == 'tomate' ? '🍅 Tomate' : '🥛 Crème' }}
+                        <a href="{{ path('app_pizzas', {type: activeType, ingredient: activeIngredient}) }}" class="hover:text-pieza-green">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </a>
+                    </span>
+                    {% endif %}
+                    {% if activeType %}
+                    <span class="inline-flex items-center gap-2 bg-pieza-green/20 text-pieza-green px-4 py-2 rounded-full font-body text-sm">
+                        Type: {{ activeType|capitalize }}
+                        <a href="{{ path('app_pizzas', {base: activeBase, ingredient: activeIngredient}) }}" class="hover:text-pieza-orange">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </a>
+                    </span>
+                    {% endif %}
+                    {% if activeIngredient %}
+                    <span class="inline-flex items-center gap-2 bg-pieza-green/20 text-pieza-green px-4 py-2 rounded-full font-body text-sm">
+                        Ingrédient: {{ activeIngredient }}
+                        <a href="{{ path('app_pizzas', {base: activeBase, type: activeType}) }}" class="hover:text-pieza-orange">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </a>
+                    </span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            {# Pizzas Display - Grouped by Base #}
+            {% if pizzasByBase is defined %}
+                {# Base Tomate Section #}
+                {% if pizzasByBase.tomate|length > 0 %}
+                <section class="mb-16">
+                    <div class="flex items-center gap-4 mb-8">
+                        <span class="text-4xl">🍅</span>
+                        <h2 class="font-display text-3xl md:text-4xl text-pieza-green">
+                            Base <span class="text-pieza-orange">Tomate</span>
+                        </h2>
+                        <div class="flex-1 h-0.5 bg-pieza-green/20 rounded-full"></div>
+                        <span class="font-body text-pieza-green/60">{{ pizzasByBase.tomate|length }} pizza{{ pizzasByBase.tomate|length > 1 ? 's' : '' }}</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {% for pizza in pizzasByBase.tomate %}
+                            {{ include('partials/_pizza_card.html.twig', {pizza: pizza}) }}
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                {# Base Crème Section #}
+                {% if pizzasByBase.creme|length > 0 %}
+                <section class="mb-16">
+                    <div class="flex items-center gap-4 mb-8">
+                        <span class="text-4xl">🥛</span>
+                        <h2 class="font-display text-3xl md:text-4xl text-pieza-green">
+                            Base <span class="text-pieza-orange">Crème Fraîche</span>
+                        </h2>
+                        <div class="flex-1 h-0.5 bg-pieza-green/20 rounded-full"></div>
+                        <span class="font-body text-pieza-green/60">{{ pizzasByBase.creme|length }} pizza{{ pizzasByBase.creme|length > 1 ? 's' : '' }}</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {% for pizza in pizzasByBase.creme %}
+                            {{ include('partials/_pizza_card.html.twig', {pizza: pizza}) }}
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+            {% else %}
+                {# Filtered Results (flat list) #}
+                {% if pizzas|length > 0 %}
+                <section class="mb-16">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-display text-3xl md:text-4xl text-pieza-green">
+                            Résultats <span class="text-pieza-orange">({{ pizzas|length }})</span>
+                        </h2>
+                        <div class="flex-1 h-0.5 bg-pieza-green/20 rounded-full"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {% for pizza in pizzas %}
+                            {{ include('partials/_pizza_card.html.twig', {pizza: pizza}) }}
+                        {% endfor %}
+                    </div>
+                </section>
+                {% else %}
+                <div class="text-center py-16">
+                    <span class="text-6xl mb-4 block">🍕</span>
+                    <h3 class="font-display text-2xl text-pieza-green mb-2">Aucune pizza trouvée</h3>
+                    <p class="font-body text-pieza-green/70 mb-6">Essayez de modifier vos critères de recherche.</p>
+                    <a href="{{ path('app_pizzas') }}" class="inline-block bg-pieza-orange text-pieza-cream px-6 py-3 rounded-full font-body font-semibold hover:bg-pieza-green transition-colors">
+                        Voir toutes les pizzas
+                    </a>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </main>
+
+    {% include 'partials/_footer.html.twig' %}
+</div>
+{% endblock %}
