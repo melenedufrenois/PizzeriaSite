@@ -1,0 +1,77 @@
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-pieza-cream">
+    <div class="absolute inset-0 flex flex-wrap items-center justify-center opacity-10 pointer-events-none">
+        {% for i in 0..19 %}
+        <div class="font-display text-6xl md:text-8xl text-pieza-green whitespace-nowrap px-8">
+            O'Trari
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="relative z-10 flex items-center justify-center px-6 -mt-30">
+        <div class="relative lg:flex lg:flex-row ">
+            <img
+                src="{{ asset('otrari.png') }}"
+                alt="O'Trari Pizza"
+                class="w-full max-w-4xl md:max-w-5xl lg:max-w-6xl h-auto object-contain drop-shadow-2xl animation-mehdi"
+            />
+            
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center mt-[500px] lg:relative lg:mt-0">
+                <div class=" px-8 py-6 md:px-12 md:py-8 mb-6">
+                    <h1 class="font-display text-[80px] md:text-[120px] lg:text-[150px] text-pieza-green leading-tight drop-shadow-lg flex flex-col ">
+                        <span class="text-pieza-green bg-pieza-cream/90 px-4 py-2 rounded-2xl">PIZZA POUR</span>
+                        <span class="text-pieza-orange bg-pieza-green/90 px-4 py-2"><span class="spin-text">TOUS</span></span>
+                    </h1>
+                </div>
+
+                <div class="bg-pieza-cream/90 backdrop-blur-sm rounded-2xl px-6 py-4 md:px-8 md:py-5 max-w-xl mx-auto">
+                    <p class="font-body text-lg md:text-xl text-pieza-green/90 drop-shadow-md">
+                        La pizza que tout le monde aime et désire. Préparée avec les ingrédients
+                        les plus frais et cuite à la perfection.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-pieza-cream to-transparent"></div>
+</section>
+
+
+<style>
+
+@keyframes rotate {
+    0% {
+        transform: rotate(-1deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(-1deg);
+    }
+
+}
+.animation-mehdi {
+    animation: rotate 1s ease-in-out;
+    cursor: pointer;
+    animation-fill-mode: both;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes fade-in-from-bottom {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.spin-text {
+    animation: fade-in-from-bottom 1s ease-in-out;
+    animation-fill-mode: both;
+    animation-iteration-count: 1;
+    animation-direction: alternate-reverse;
+}
+</style>

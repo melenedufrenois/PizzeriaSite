@@ -2,22 +2,46 @@
 services:
 ###> doctrine/doctrine-bundle ###
   database:
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    image: mysql:8.0
+    container_name: pizzeria_mysql
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pizzeria
+      MYSQL_USER: pizzeria_user
+      MYSQL_PASSWORD: pizzeria_password
+    ports:
+      - "3306:3306"
     healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 5s
       retries: 5
       start_period: 60s
     volumes:
-      - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
+      - database_data:/var/lib/mysql:rw
+    command: --default-authentication-plugin=mysql_native_password
 ###< doctrine/doctrine-bundle ###
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pizzeria_phpmyadmin
+    environment:
+      PMA_HOST: database
+      PMA_USER: pizzeria_user
+      PMA_PASSWORD: pizzeria_password
+    ports:
+      - "8080:80"
+    depends_on:
+      - database
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: pizzeria_mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
 
 volumes:
 ###> doctrine/doctrine-bundle ###
