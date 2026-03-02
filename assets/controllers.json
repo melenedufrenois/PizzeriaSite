@@ -9,15 +9,8 @@
                 "enabled": false,
                 "fetch": "eager"
             }
-        },
-        "filter": {
-            "enabled": true,
-            "fetch": "eager"
-        },
-        "navigation-feedback": {
-            "enabled": true,
-            "fetch": "eager"
         }
     },
     "entrypoints": []
 }
+
