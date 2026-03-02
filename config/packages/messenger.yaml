@@ -24,3 +24,12 @@ framework:
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
+
+when@dev:
+    framework:
+        messenger:
+            transports:
+                sync: 'sync://'
+            routing:
+                # In local/dev, send emails immediately so Mailpit receives them without a worker.
+                Symfony\Component\Mailer\Messenger\SendEmailMessage: sync

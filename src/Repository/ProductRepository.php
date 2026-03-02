@@ -36,7 +36,9 @@ class ProductRepository extends ServiceEntityRepository
         ?string $category = null,
         ?string $type = null,
         ?string $base = null,
-        ?string $alcoholic = null
+        ?string $alcoholic = null,
+        ?array $excludeAllergens = null,
+        ?array $diets = null
     ): array {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.active = :active')
@@ -70,6 +72,59 @@ class ProductRepository extends ServiceEntityRepository
             $isAlcoholic = ($alcoholic === 'alcool');
             $results = array_filter($results, function($p) use ($isAlcoholic) {
                 return $p instanceof \App\Entity\Drink && $p->isAlcoholic() === $isAlcoholic;
+            });
+        }
+
+        // Exclude products containing specific allergens
+        if ($excludeAllergens && count($excludeAllergens) > 0) {
+            $results = array_filter($results, function($p) use ($excludeAllergens) {
+                $productAllergens = array_map('strtolower', $p->getAllergens());
+                foreach ($excludeAllergens as $allergen) {
+                    if (in_array(strtolower($allergen), $productAllergens)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
+
+        // Filter by dietary preferences
+        if ($diets && count($diets) > 0) {
+            $dietRules = self::getDietaryRules();
+            $results = array_filter($results, function($p) use ($diets, $dietRules) {
+                $productType = strtolower($p->getType() ?? '');
+                $ingredients = method_exists($p, 'getIngredients') ? $p->getIngredients() : [];
+                $ingredientsLower = array_map('strtolower', $ingredients);
+                $isAlcoholic = ($p instanceof \App\Entity\Drink && $p->isAlcoholic());
+
+                foreach ($diets as $diet) {
+                    if (!isset($dietRules[$diet])) {
+                        continue;
+                    }
+                    $rule = $dietRules[$diet];
+
+                    // Check excluded product types
+                    if (isset($rule['excludeTypes']) && in_array($productType, $rule['excludeTypes'])) {
+                        return false;
+                    }
+
+                    // Check excluded ingredients
+                    if (isset($rule['excludeIngredients'])) {
+                        foreach ($rule['excludeIngredients'] as $excluded) {
+                            foreach ($ingredientsLower as $ingredient) {
+                                if (str_contains($ingredient, strtolower($excluded))) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+
+                    // Check if alcohol is excluded
+                    if (!empty($rule['excludeAlcohol']) && $isAlcoholic) {
+                        return false;
+                    }
+                }
+                return true;
             });
         }
 
@@ -204,6 +259,147 @@ class ProductRepository extends ServiceEntityRepository
 
         // Remove empty categories
         return array_filter($grouped, fn($items) => count($items) > 0);
+    }
+
+    /**
+     * Get all distinct allergens from active products
+     * @return array<string, string>
+     */
+    public function findAllAllergens(): array
+    {
+        $products = $this->findAllActive();
+        return $this->getAllergensFromProducts($products);
+    }
+
+    /**
+     * Get distinct allergens from a given set of products
+     * @param Product[] $products
+     * @return array<string, string>
+     */
+    public function getAllergensFromProducts(array $products): array
+    {
+        $allergens = [];
+
+        foreach ($products as $product) {
+            foreach ($product->getAllergens() as $allergen) {
+                $key = strtolower(str_replace([' ', "'"], ['_', '_'], $allergen));
+                if (!isset($allergens[$key])) {
+                    $allergens[$key] = $allergen;
+                }
+            }
+        }
+
+        ksort($allergens);
+        return $allergens;
+    }
+
+    /**
+     * Get dietary filters that would actually exclude at least one product from the given set
+     * @param Product[] $products
+     * @return array<string, array{label: string, emoji: string}>
+     */
+    public function getRelevantDiets(array $products): array
+    {
+        $allDiets = self::getAvailableDiets();
+        $rules = self::getDietaryRules();
+        $relevant = [];
+
+        foreach ($allDiets as $dietKey => $diet) {
+            if (!isset($rules[$dietKey])) {
+                continue;
+            }
+            $rule = $rules[$dietKey];
+
+            // Check if this diet would exclude at least one product
+            foreach ($products as $product) {
+                $productType = strtolower($product->getType() ?? '');
+                $ingredients = method_exists($product, 'getIngredients') ? $product->getIngredients() : [];
+                $ingredientsLower = array_map('strtolower', $ingredients);
+                $isAlcoholic = ($product instanceof \App\Entity\Drink && $product->isAlcoholic());
+
+                $excluded = false;
+
+                if (isset($rule['excludeTypes']) && in_array($productType, $rule['excludeTypes'])) {
+                    $excluded = true;
+                }
+
+                if (!$excluded && isset($rule['excludeIngredients'])) {
+                    foreach ($rule['excludeIngredients'] as $excl) {
+                        foreach ($ingredientsLower as $ingredient) {
+                            if (str_contains($ingredient, strtolower($excl))) {
+                                $excluded = true;
+                                break 2;
+                            }
+                        }
+                    }
+                }
+
+                if (!$excluded && !empty($rule['excludeAlcohol']) && $isAlcoholic) {
+                    $excluded = true;
+                }
+
+                if ($excluded) {
+                    $relevant[$dietKey] = $diet;
+                    break; // At least one product excluded, this diet is relevant
+                }
+            }
+        }
+
+        return $relevant;
+    }
+
+    /**
+     * Get available dietary filters with their rules
+     * @return array<string, array{label: string, emoji: string, excludeTypes?: string[], excludeIngredients?: string[], excludeAlcohol?: bool}>
+     */
+    public static function getAvailableDiets(): array
+    {
+        return [
+            'vegetarien' => [
+                'label' => 'Végétarien',
+                'emoji' => '🥬',
+            ],
+            'vegan' => [
+                'label' => 'Végan',
+                'emoji' => '🌱',
+            ],
+            'halal' => [
+                'label' => 'Halal',
+                'emoji' => '🌙',
+            ],
+            'sans_porc' => [
+                'label' => 'Sans porc',
+                'emoji' => '🚫🐷',
+            ],
+        ];
+    }
+
+    /**
+     * Internal rules for each dietary filter
+     */
+    private static function getDietaryRules(): array
+    {
+        return [
+            'vegetarien' => [
+                'excludeTypes' => ['viande', 'poisson'],
+                'excludeIngredients' => ['Bœuf', 'Poulet', 'Bacon', 'Lardons', 'Jambon', 'Pepperoni', 'Saucisse', 'Guanciale', 'Salami', 'Anchois', 'Saumon'],
+            ],
+            'vegan' => [
+                'excludeTypes' => ['viande', 'poisson', 'fromage'],
+                'excludeIngredients' => [
+                    'Bœuf', 'Poulet', 'Bacon', 'Lardons', 'Jambon', 'Pepperoni', 'Saucisse', 'Guanciale', 'Salami', 'Anchois', 'Saumon',
+                    'Mozzarella', 'Parmesan', 'Gorgonzola', 'Chèvre', 'Feta', 'Reblochon', 'Pecorino', 'Fontina', 'Ricotta', 'Mascarpone',
+                    'Crème', 'Crème fraîche', 'Beurre', 'Lait', 'Œufs', 'Miel', 'Béchamel',
+                ],
+            ],
+            'halal' => [
+                'excludeIngredients' => ['Bacon', 'Lardons', 'Jambon', 'Guanciale', 'Saucisse', 'Pepperoni', 'Salami'],
+                'excludeAlcohol' => true,
+            ],
+            'sans_porc' => [
+                'excludeIngredients' => ['Bacon', 'Lardons', 'Jambon', 'Guanciale', 'Saucisse', 'Pepperoni', 'Salami'],
+            ],
+        ];
     }
 
     private function getClassForCategory(string $category): string
