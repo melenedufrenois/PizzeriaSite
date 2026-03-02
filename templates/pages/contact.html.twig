@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact - O'Trari{% endblock %}
+
+{% block body %}
+<div class="min-h-screen font-body bg-pieza-cream">
+    {% include 'partials/_header.html.twig' %}
+
+    <main class="py-12 px-6">
+        <div class="max-w-3xl mx-auto">
+            {% if showSuccessState %}
+                <section class="rounded-3xl border-2 border-pieza-green bg-white p-10 text-center shadow-sm">
+                    <p class="mb-4 text-5xl leading-none">✅</p>
+                    <h1 class="font-display text-5xl text-pieza-green md:text-6xl">
+                        FORMULAIRE <span class="text-pieza-orange">ENVOYÉ</span>
+                    </h1>
+                    <p class="mx-auto mt-5 max-w-xl text-lg text-pieza-green/80">
+                        Merci, votre demande a bien été transmise à l'équipe O'Trari.
+                    </p>
+
+                    <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                        <a href="{{ path('app_menu') }}" class="inline-flex items-center justify-center rounded-full bg-pieza-green px-8 py-4 font-semibold text-pieza-cream transition-colors hover:bg-pieza-orange">
+                            Retour au menu
+                        </a>
+                        <a href="{{ path('app_contact') }}" class="inline-flex items-center justify-center rounded-full border-2 border-pieza-green px-8 py-4 font-semibold text-pieza-green transition-colors hover:bg-pieza-green hover:text-pieza-cream">
+                            Nouvelle demande
+                        </a>
+                    </div>
+                </section>
+            {% else %}
+                <div class="mb-10 text-center">
+                    <h1 class="font-display text-5xl md:text-6xl text-pieza-green mb-4">
+                        CONTACTEZ <span class="text-pieza-orange">O'TRARI</span>
+                    </h1>
+                    <p class="font-body text-lg text-pieza-green/70">
+                        Réservation, devis, question ou organisation d'événement: envoyez-nous votre demande.
+                    </p>
+                </div>
+
+                {% for message in app.flashes('error') %}
+                    <div class="mb-6 rounded-2xl border-2 border-red-700/30 bg-red-50 px-5 py-4 text-red-800">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
+                {% if showValidationErrorMessage %}
+                    <div class="mb-6 rounded-2xl border-2 border-red-700/30 bg-red-50 px-5 py-4 text-red-800">
+                        Merci de corriger les erreurs du formulaire avant d'envoyer votre demande.
+                    </div>
+                {% endif %}
+
+                <div class="rounded-3xl border-2 border-pieza-green bg-white p-8 shadow-sm">
+                    {{ form_start(contactForm, {attr: {class: 'space-y-6'}}) }}
+                        <div class="grid gap-6 md:grid-cols-2">
+                            <div class="space-y-2 md:col-span-2">
+                                {{ form_label(contactForm.requestType) }}
+                                {{ form_widget(contactForm.requestType, {attr: {class: 'w-full rounded-xl border-2 border-pieza-green/40 px-4 py-3'}}) }}
+                                <div class="text-sm font-medium text-red-700">{{ form_errors(contactForm.requestType) }}</div>
+                            </div>
+
+                            <div class="space-y-2">
+                                {{ form_label(contactForm.fullName) }}
+                                {{ form_widget(contactForm.fullName, {attr: {class: 'w-full rounded-xl border-2 border-pieza-green/40 px-4 py-3'}}) }}
+                                <div class="text-sm font-medium text-red-700">{{ form_errors(contactForm.fullName) }}</div>
+                            </div>
+
+                            <div class="space-y-2">
+                                {{ form_label(contactForm.email) }}
+                                {{ form_widget(contactForm.email, {attr: {class: 'w-full rounded-xl border-2 border-pieza-green/40 px-4 py-3'}}) }}
+                                <div class="text-sm font-medium text-red-700">{{ form_errors(contactForm.email) }}</div>
+                            </div>
+
+                            <div class="space-y-2 md:col-span-2">
+                                {{ form_label(contactForm.phone) }}
+                                {{ form_widget(contactForm.phone, {attr: {class: 'w-full rounded-xl border-2 border-pieza-green/40 px-4 py-3'}}) }}
+                                <div class="text-sm font-medium text-red-700">{{ form_errors(contactForm.phone) }}</div>
+                            </div>
+
+                            <div class="space-y-2 md:col-span-2">
+                                {{ form_label(contactForm.message) }}
+                                {{ form_widget(contactForm.message, {attr: {class: 'w-full rounded-xl border-2 border-pieza-green/40 px-4 py-3'}}) }}
+                                <div class="text-sm font-medium text-red-700">{{ form_errors(contactForm.message) }}</div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="inline-flex items-center justify-center rounded-full bg-pieza-green px-8 py-4 font-body font-semibold text-pieza-cream transition-colors hover:bg-pieza-orange">
+                                Envoyer la demande
+                            </button>
+                        </div>
+                    {{ form_end(contactForm) }}
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    {% include 'partials/_footer.html.twig' %}
+</div>
+{% endblock %}

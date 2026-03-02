@@ -1,0 +1,31 @@
+<section id="menu" class="bg-pieza-cream py-24 px-6">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-16">
+            <h2 class="font-display text-5xl md:text-7xl text-pieza-green mb-4">
+                LE MEILLEUR <span class="text-pieza-orange">DU</span>
+                <br>
+                MEILLEUR
+            </h2>
+            <p class="font-body text-lg text-pieza-green/70 max-w-xl">
+                Nous croyons que chaque pizza mérite une croûte délicieusement fromagère, et
+                c'est pourquoi nous avons fait de notre mission de créer les pizzas les plus
+                fromagères et les plus gourmandes qui soient.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for pizza in pizzas|slice(0, 4) %}
+                {{ include('partials/_pizza_card.html.twig', {pizza: pizza}) }}
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="{{ path('app_menu', {category: 'pizza'}) }}" class="inline-flex items-center gap-2 bg-pieza-green text-pieza-cream px-8 py-4 rounded-full font-body font-semibold hover:bg-pieza-orange transition-colors">
+                <span>Voir toutes les pizzas</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>

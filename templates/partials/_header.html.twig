@@ -1,0 +1,42 @@
+<header class="sticky top-0 left-0 right-0 z-50 bg-pieza-cream border-b-2 border-pieza-green">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="{{ path('app_home') }}" class="font-display text-4xl text-pieza-orange tracking-tight">
+            O'Trari
+        </a>
+
+        {# Desktop nav #}
+        <nav class="hidden md:flex items-center gap-8 font-body font-medium text-pieza-green">
+            <a href="{{ path('app_menu') }}" class="hover:text-pieza-orange transition-colors">La Carte</a>
+            <a href="#about" class="hover:text-pieza-orange transition-colors">À propos</a>
+            <a href="{{ path('app_access') }}" class="hover:text-pieza-orange transition-colors">Accès</a>
+            <a href="{{ path('app_contact') }}" class="hover:text-pieza-orange transition-colors">Contact</a>
+        </nav>
+
+        {# Mobile hamburger button #}
+        <button
+            id="nav-toggle"
+            class="md:hidden flex flex-col justify-center gap-1.5 w-11 h-11 p-2 rounded-lg text-pieza-green hover:bg-pieza-green/10 transition-colors"
+            aria-label="Ouvrir le menu"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+        >
+            <span class="block w-full h-0.5 bg-current rounded transition-all"></span>
+            <span class="block w-full h-0.5 bg-current rounded transition-all"></span>
+            <span class="block w-full h-0.5 bg-current rounded transition-all"></span>
+        </button>
+    </div>
+
+    {# Mobile nav panel #}
+    <nav
+        id="mobile-nav"
+        class="hidden md:hidden border-t-2 border-pieza-green bg-pieza-cream"
+        aria-label="Navigation mobile"
+    >
+        <ul class="flex flex-col px-6 py-4 gap-1 font-body font-medium text-pieza-green">
+            <li><a href="{{ path('app_menu') }}" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">La Carte</a></li>
+            <li><a href="#about" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">À propos</a></li>
+            <li><a href="{{ path('app_access') }}" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">Accès</a></li>
+            <li><a href="{{ path('app_contact') }}" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">Contact</a></li>
+        </ul>
+    </nav>
+</header>

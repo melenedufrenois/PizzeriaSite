@@ -18,3 +18,17 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+###> playwright ###
+/node_modules/
+/playwright-report/
+/test-results/
+/playwright/.cache/
+###< playwright ###
+
+###> markdown for agents ###
+/AGENTS.md
+###< markdown for agents ###
+
+# TDD local tests (non versionnés)
+/test_perso/
