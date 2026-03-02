@@ -13,7 +13,6 @@ jobs:
 
     env:
       APP_ENV: test
-      DATABASE_URL: "sqlite:///%kernel.project_dir%/var/data_test.db"
     
     steps:
     - name: Checkout code
@@ -44,15 +43,24 @@ jobs:
 
     - name: Setup test database
       run: |
+        echo 'DATABASE_URL="sqlite:///%kernel.project_dir%/var/data_test.db"' > .env.test.local
         php bin/console doctrine:schema:create --env=test
         php bin/console doctrine:fixtures:load --env=test --no-interaction
 
     - name: Start PHP Server
-      run: php -S localhost:8000 -t public &
+      run: APP_ENV=test php -S localhost:8000 -t public public/index.php &
 
     - name: Wait for server
       run: |
-        timeout 30 bash -c 'until curl -sf http://localhost:8000 > /dev/null 2>&1; do sleep 1; done'
+        for i in $(seq 1 30); do
+          STATUS=$(curl -s -o /tmp/response.html -w '%{http_code}' http://localhost:8000/ 2>/dev/null || echo "000")
+          echo "Attempt $i: HTTP $STATUS"
+          if [ "$STATUS" = "200" ]; then exit 0; fi
+          sleep 2
+        done
+        echo "=== Server failed. Last response body: ==="
+        cat /tmp/response.html 2>/dev/null | head -100 || true
+        exit 1
 
     - name: Run Playwright tests
       run: npm test
