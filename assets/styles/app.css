@@ -13,6 +13,20 @@
   --font-body: "Inter", sans-serif;
 }
 
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  body {
+    @apply bg-pieza-cream font-body;
+    overflow-x: hidden;
+    min-width: 320px;
+  }
+  img, video, svg {
+    max-width: 100%;
+    height: auto;
+  }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --color-pieza-cream: #1c1c1c;
@@ -27,7 +41,6 @@
   --color-pieza-orange: #ff8a65;
 }
 
-/* ── Custom dark variant for dark: utilities ── */
 @custom-variant dark (&:is([data-theme="dark"] *));
 
 @layer base {
@@ -48,6 +61,9 @@
 }
 
 @layer components {
+  /* Animation pour transformer le cercle en carré progressivement */
+
+  /* Skeleton loading animation */
   .skeleton-pulse {
     @apply relative overflow-hidden bg-pieza-green/10 rounded-3xl;
   }
