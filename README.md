@@ -38,6 +38,7 @@ docker compose exec php php bin/console tailwind:build
 |---------|-----|-------------|
 | **Application** | http://localhost:8000 | Site Pizzeria |
 | **phpMyAdmin** | http://localhost:8080 | Administration BDD |
+| **Page accès** | http://localhost:8000/acces | Carte interactive & itinéraire |
 
 ### Identifiants BDD
 
@@ -161,6 +162,10 @@ Voir le fichier `.env` pour configurer :
 - `DATABASE_URL` : URL de connexion à la base de données
 - `MAILER_DSN` : Configuration du service de mail
 - `APP_ENV` : Environnement (dev/prod)
+- `GOOGLE_MAPS_API_KEY` : Clé API Google Maps Embed
+- `PIZZERIA_MAP_LATITUDE` : Latitude de la pizzeria
+- `PIZZERIA_MAP_LONGITUDE` : Longitude de la pizzeria
+- `PIZZERIA_MAP_ADDRESS` : Libellé de l’adresse affichée sur la page d’accès
 
 ## 👥 Contributeurs
 
