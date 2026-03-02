@@ -46,7 +46,7 @@
 
             {# Context-specific Filters (only when category is selected) #}
             {% if activeCategory and filters|length > 0 %}
-            <div class="flex flex-wrap justify-center gap-2 mb-8">
+            <div class="flex flex-wrap justify-center gap-2 mb-8" data-testid="sub-filters">
                 <a 
                     href="{{ path('app_menu', {category: activeCategory}) }}" 
                     class="px-4 py-2 rounded-full font-body text-sm transition-all {{ activeFilter is null ? 'bg-pieza-orange text-pieza-cream' : 'bg-pieza-orange/20 text-pieza-orange hover:bg-pieza-orange/40' }}"
