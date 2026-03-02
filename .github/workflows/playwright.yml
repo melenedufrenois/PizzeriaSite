@@ -66,11 +66,21 @@ jobs:
         php bin/console doctrine:schema:create --env=test
         php bin/console doctrine:fixtures:load --env=test --no-interaction
 
+    - name: Compile assets
+      run: php bin/console asset-map:compile --env=test
+
     - name: Warmup cache
       run: php bin/console cache:warmup --env=test
 
+    - name: Pre-flight check
+      run: |
+        php bin/console debug:router --env=test | head -20
+        php bin/console about --env=test | head -30
+        echo "--- Checking public/assets ---"
+        ls -la public/assets/ 2>/dev/null | head -10 || echo "public/assets/ is EMPTY"
+
     - name: Start PHP Server
-      run: APP_ENV=test php -S localhost:8000 -t public public/index.php &
+      run: APP_ENV=test php -S localhost:8000 -t public public/index.php > var/log/php-server.log 2>&1 &
 
     - name: Wait for server
       run: |
@@ -78,10 +88,24 @@ jobs:
           STATUS=$(curl -s -o /tmp/response.html -w '%{http_code}' http://localhost:8000/ 2>/dev/null || echo "000")
           echo "Attempt $i: HTTP $STATUS"
           if [ "$STATUS" = "200" ]; then exit 0; fi
+          if [ "$STATUS" = "500" ] && [ "$i" = "3" ]; then
+            echo "=== RESPONSE BODY (attempt 3) ==="
+            cat /tmp/response.html 2>/dev/null | grep -oP '<title>.*?</title>' || true
+            cat /tmp/response.html 2>/dev/null | grep -oP 'exception-message[^<]*<[^<]*<[^<]*' | head -5 || true
+            cat /tmp/response.html 2>/dev/null | grep -i 'error\|exception\|fatal' | head -10 || true
+            echo "=== SYMFONY LOG ==="
+            cat var/log/test.log 2>/dev/null | tail -30 || echo "No test.log"
+            echo "=== PHP SERVER LOG ==="
+            cat var/log/php-server.log 2>/dev/null | tail -20 || echo "No php-server.log"
+          fi
           sleep 2
         done
-        echo "=== Server failed. Last response body: ==="
-        cat /tmp/response.html 2>/dev/null | head -100 || true
+        echo "=== Server STILL failing. Full response: ==="
+        cat /tmp/response.html 2>/dev/null | head -200 || true
+        echo "=== FULL SYMFONY LOG ==="
+        cat var/log/test.log 2>/dev/null || echo "No test.log"
+        echo "=== FULL PHP SERVER LOG ==="
+        cat var/log/php-server.log 2>/dev/null || echo "No php-server.log"
         exit 1
 
     - name: Run Playwright tests
