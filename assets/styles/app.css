@@ -16,6 +16,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-pieza-cream font-body;
+  }
+  /* Override Turbo Drive's default blue progress bar */
     overflow-x: hidden;
   }
   body {
@@ -94,6 +99,25 @@
     100% { width: 95%; }
   }
 
+  /* Skip link – visually hidden until focused (WCAG 2.4.1) */
+  .skip-link {
+    @apply absolute -top-full left-0 z-50 bg-pieza-green text-pieza-cream px-4 py-2 font-body font-semibold no-underline;
+  }
+  .skip-link:focus {
+    @apply top-0;
+  }
+}
+
+@layer base {
+  /* Visible focus indicator for keyboard navigation (WCAG 2.4.7 / 2.4.11) */
+  *:focus-visible {
+    outline: 3px solid #FF6B4A;
+    outline-offset: 3px;
+  }
+
+  /* Suppress outline on mouse click while keeping it for keyboard */
+  *:focus:not(:focus-visible) {
+    outline: none;
   .theme-selector {
     @apply inline-flex items-center gap-2 text-sm;
   }
