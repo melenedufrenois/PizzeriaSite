@@ -1,75 +1,47 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Tests E2E pour la navigation du site
+ * Tests E2E — Navigation
+ * Vérifie les parcours utilisateur réels : scroll ancres, lien carte, header sticky.
  */
 test.describe('Navigation', () => {
-  
+
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
-  test('doit naviguer vers la section menu en cliquant sur le lien', async ({ page }) => {
-    // Cliquer sur le lien Menu
-    await page.click('nav a[href="#menu"]');
-    
-    // Vérifier que la section menu est visible dans le viewport
-    const menuSection = page.locator('#menu');
-    await expect(menuSection).toBeInViewport({ timeout: 2000 });
+  test('doit naviguer vers la section "À propos" via le lien ancre', async ({ page }) => {
+    await page.locator('header nav a', { hasText: 'À propos' }).click();
+    await expect(page.locator('#about')).toBeInViewport({ timeout: 3000 });
   });
 
-  test('doit naviguer vers la section à propos en cliquant sur le lien', async ({ page }) => {
-    // Cliquer sur le lien À propos
-    await page.click('nav a[href="#about"]');
-    
-    // Vérifier que la section about est visible dans le viewport
-    const aboutSection = page.locator('#about');
-    await expect(aboutSection).toBeInViewport({ timeout: 2000 });
+  test('doit naviguer vers le footer/contact via le lien ancre', async ({ page }) => {
+    await page.locator('header nav a', { hasText: 'Contact' }).click();
+    await expect(page.locator('footer#contact')).toBeInViewport({ timeout: 3000 });
   });
 
-  test('doit naviguer vers la section contact en cliquant sur le lien', async ({ page }) => {
-    // Cliquer sur le lien Contact
-    await page.click('nav a[href="#contact"]');
-    
-    // Vérifier que la section contact est visible
-    const contactSection = page.locator('#contact');
-    await expect(contactSection).toBeInViewport({ timeout: 2000 });
+  test('doit naviguer vers la page carte via le lien "La Carte"', async ({ page }) => {
+    await page.locator('header nav a', { hasText: 'La Carte' }).click();
+    await page.waitForURL(/\/carte/);
+    await expect(page).toHaveURL(/\/carte/);
   });
 
-  test('doit garder le header visible lors du scroll', async ({ page }) => {
-    // Scroller vers le bas
-    await page.evaluate(() => window.scrollTo(0, 1000));
-    
-    // Vérifier que le header est toujours visible
-    const header = page.locator('header');
-    await expect(header).toBeVisible();
+  test('doit garder le header visible après un scroll', async ({ page }) => {
+    await page.evaluate(() => window.scrollTo(0, 1500));
+    // Petit délai pour le scroll
+    await page.waitForTimeout(300);
+    await expect(page.locator('header')).toBeVisible();
+    await expect(page.locator('header')).toBeInViewport();
   });
 
-  test('doit avoir des liens de navigation avec effet hover', async ({ page }) => {
-    const menuLink = page.locator('nav a[href="#menu"]');
-    
-    // Vérifier que le lien existe
-    await expect(menuLink).toBeVisible();
-    
-    // Vérifier la classe hover
-    await expect(menuLink).toHaveClass(/hover:text-pieza-orange/);
-  });
-
-  test('doit afficher le logo cliquable', async ({ page }) => {
-    const logo = page.locator('header .font-display').first();
-    await expect(logo).toBeVisible();
-    await expect(logo).toHaveText('O\'Trari');
-  });
-
-  test('doit masquer la navigation mobile sur desktop', async ({ page }) => {
-    // Définir une taille de viewport desktop
-    await page.setViewportSize({ width: 1920, height: 1080 });
-    
-    // Vérifier que la navigation est visible
-    const nav = page.locator('nav');
+  test('doit masquer la nav desktop sur mobile et la garder sur desktop', async ({ page }) => {
+    // Desktop : nav visible
+    await page.setViewportSize({ width: 1280, height: 720 });
+    const nav = page.locator('header nav');
     await expect(nav).toBeVisible();
-    
-    // Vérifier qu'elle a la classe hidden pour mobile
-    await expect(nav).toHaveClass(/hidden.*md:flex/);
+
+    // Mobile : nav masquée (hidden md:flex)
+    await page.setViewportSize({ width: 375, height: 667 });
+    await expect(nav).toBeHidden();
   });
 });
