@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+
+    env:
+      APP_ENV: test
+      DATABASE_URL: "sqlite:///%kernel.project_dir%/var/data_test.db"
     
     steps:
     - name: Checkout code
@@ -38,14 +42,18 @@ jobs:
     - name: Build Tailwind CSS
       run: php bin/console tailwind:build
 
+    - name: Setup test database
+      run: |
+        php bin/console doctrine:database:create --env=test --if-not-exists
+        php bin/console doctrine:schema:create --env=test
+        php bin/console doctrine:fixtures:load --env=test --no-interaction
+
     - name: Start PHP Server
       run: php -S localhost:8000 -t public &
-      env:
-        APP_ENV: test
 
     - name: Wait for server
       run: |
-        timeout 30 bash -c 'until curl -f http://localhost:8000; do sleep 1; done'
+        timeout 30 bash -c 'until curl -sf http://localhost:8000 > /dev/null 2>&1; do sleep 1; done'
 
     - name: Run Playwright tests
       run: npm test
