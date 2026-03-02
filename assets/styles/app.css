@@ -27,7 +27,33 @@
     max-width: 100%;
     height: auto;
   }
-  /* Override Turbo Drive's default blue progress bar */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-pieza-cream: #1c1c1c;
+    --color-pieza-green: #a8c5a4;
+    --color-pieza-orange: #ff8a65;
+  }
+}
+/* Explicit user choice */
+:root[data-theme="dark"] {
+  --color-pieza-cream: #1c1c1c;
+  --color-pieza-green: #a8c5a4;
+  --color-pieza-orange: #ff8a65;
+}
+
+@custom-variant dark (&:is([data-theme="dark"] *));
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-pieza-cream font-body;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  body, h1, h2, h3, h4, h5, h6, p {
+    @apply text-pieza-green;
+  }
   .turbo-progress-bar {
     background-color: #FF6B4A !important;
     height: 3px;
@@ -66,5 +92,32 @@
     0% { width: 0%; }
     50% { width: 70%; }
     100% { width: 95%; }
+  }
+
+  .theme-selector {
+    @apply inline-flex items-center gap-2 text-sm;
+  }
+  .theme-selector select {
+    @apply bg-pieza-cream text-pieza-green border border-pieza-green/30 rounded-full px-3 py-1 cursor-pointer text-sm font-body;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  picture {
+    display: block;
+    overflow: hidden;
+  }
+
+  picture img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    transition: filter 0.3s ease;
+  }
+
+  .data-saver-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 0.85rem;
+    cursor: pointer;
   }
 }

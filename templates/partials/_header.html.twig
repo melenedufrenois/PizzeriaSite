@@ -39,4 +39,21 @@
             <li><a href="{{ path('app_contact') }}" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">Contact</a></li>
         </ul>
     </nav>
+            <div data-controller="theme">
+                <label class="theme-selector" aria-label="Thème">
+                    🎨
+                    <select data-theme-target="selector" data-action="change->theme#change" aria-label="Choisir le thème">
+                        <option value="system">Système</option>
+                        <option value="light">Clair</option>
+                        <option value="dark">Sombre</option>
+                    </select>
+                </label>
+            </div>
+        </nav>
+
+        {# <button class="bg-pieza-green text-pieza-cream px-6 py-3 rounded-full font-body font-medium hover:bg-pieza-orange transition-colors flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span>Order Now</span>
+        </button> #}
+    </div>
 </header>

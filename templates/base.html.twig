@@ -11,6 +11,15 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+        {# Apply saved theme early to avoid flash of wrong theme #}
+        <script>
+            (function () {
+                var savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                }
+            }());
+        </script>
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         {% endblock %}
@@ -19,6 +28,16 @@
         {% endblock %}
     </head>
     <body class="min-h-screen font-body antialiased" data-controller="navigation-feedback">
+        {# Data-saver toggle: lets users opt in/out of bandwidth-saving mode. #}
+        <button type="button"
+                class="data-saver-toggle"
+                data-controller="responsive-image"
+                data-action="click->responsive-image#toggleSaveData"
+                title="{{ save_data|default(false) ? 'Désactiver' : 'Activer' }} le mode Économie de données"
+                aria-pressed="{{ save_data|default(false) ? 'true' : 'false' }}">
+            🔋 {{ save_data|default(false) ? 'Économie de données : ON' : 'Économie de données : OFF' }}
+        </button>
+
         {% block body %}{% endblock %}
     </body>
 </html>
