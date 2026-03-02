@@ -23,6 +23,7 @@
                 <a 
                     href="{{ path('app_menu') }}" 
                     class="px-6 py-3 rounded-full font-body font-semibold transition-all {{ activeCategory is null ? 'bg-pieza-green text-pieza-cream' : 'bg-white border-2 border-pieza-green text-pieza-green hover:bg-pieza-green hover:text-pieza-cream' }}"
+                    data-action="click->navigation-feedback#onFilterClick"
                 >
                     Tout
                 </a>
@@ -31,6 +32,7 @@
                     <a 
                         href="{{ path('app_menu', {category: catKey}) }}" 
                         class="px-6 py-3 rounded-full font-body font-semibold transition-all flex items-center gap-2 {{ activeCategory == catKey ? 'bg-pieza-green text-pieza-cream' : 'bg-white border-2 border-pieza-green text-pieza-green hover:bg-pieza-green hover:text-pieza-cream' }}"
+                        data-action="click->navigation-feedback#onFilterClick"
                     >
                         {% if catKey == 'pizza' %}🍕{% endif %}
                         {% if catKey == 'pates' %}🍝{% endif %}
@@ -48,6 +50,7 @@
                 <a 
                     href="{{ path('app_menu', {category: activeCategory}) }}" 
                     class="px-4 py-2 rounded-full font-body text-sm transition-all {{ activeFilter is null ? 'bg-pieza-orange text-pieza-cream' : 'bg-pieza-orange/20 text-pieza-orange hover:bg-pieza-orange/40' }}"
+                    data-action="click->navigation-feedback#onFilterClick"
                 >
                     Tous
                 </a>
@@ -55,6 +58,7 @@
                 <a 
                     href="{{ path('app_menu', {category: activeCategory, filter: filterKey}) }}" 
                     class="px-4 py-2 rounded-full font-body text-sm transition-all {{ activeFilter == filterKey ? 'bg-pieza-orange text-pieza-cream' : 'bg-pieza-orange/20 text-pieza-orange hover:bg-pieza-orange/40' }}"
+                    data-action="click->navigation-feedback#onFilterClick"
                 >
                     {{ filterLabel }}
                 </a>
@@ -62,7 +66,23 @@
             </div>
             {% endif %}
 
+            {# Skeleton Loader — shown during Turbo navigation #}
+            <div data-navigation-feedback-target="skeleton" class="hidden">
+                <div class="turbo-progress-bar"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+                    {% for i in 1..8 %}
+                    <div class="skeleton-pulse p-6 h-80 rounded-3xl">
+                        <div class="w-32 h-32 mx-auto rounded-full bg-pieza-green/5 mb-6"></div>
+                        <div class="h-6 bg-pieza-green/5 rounded-full w-3/4 mx-auto mb-3"></div>
+                        <div class="h-4 bg-pieza-green/5 rounded-full w-1/2 mx-auto mb-2"></div>
+                        <div class="h-4 bg-pieza-green/5 rounded-full w-2/3 mx-auto"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
             {# Products Display - Grouped by Category #}
+            <div data-navigation-feedback-target="content">
             {% if productsByCategory|length > 0 %}
                 {% for catKey, catProducts in productsByCategory %}
                     {% if catProducts|length > 0 %}
@@ -98,6 +118,7 @@
                     </a>
                 </div>
             {% endif %}
+            </div>
         </div>
     </main>
 
