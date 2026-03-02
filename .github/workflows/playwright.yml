@@ -29,7 +29,7 @@ jobs:
 
     env:
       APP_ENV: test
-      DATABASE_URL: "mysql://pizzeria_user:pizzeria_password@127.0.0.1:3306/pizzeria_test?serverVersion=8.0&charset=utf8mb4"
+      DATABASE_URL: "mysql://pizzeria_user:pizzeria_password@127.0.0.1:3306/pizzeria?serverVersion=8.0&charset=utf8mb4"
     
     steps:
     - name: Checkout code
