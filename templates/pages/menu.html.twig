@@ -62,6 +62,31 @@
             </div>
             {% endif %}
 
+            {# Allergen Exclusion Filters #}
+            {% if availableAllergens|length > 0 %}
+            <div class="flex flex-wrap justify-center items-center gap-2 mb-8">
+                {% for allergenKey, allergenLabel in availableAllergens %}
+                    {% set isActive = allergenKey in activeSans %}
+                    {# Build the new sans array: toggle the current allergen #}
+                    {% if isActive %}
+                        {% set newSans = activeSans|filter(v => v != allergenKey) %}
+                    {% else %}
+                        {% set newSans = activeSans|merge([allergenKey]) %}
+                    {% endif %}
+                    {# Build query params #}
+                    {% set params = {} %}
+                    {% if activeCategory %}{% set params = params|merge({category: activeCategory}) %}{% endif %}
+                    {% if activeFilter %}{% set params = params|merge({filter: activeFilter}) %}{% endif %}
+                    {% for s in newSans %}
+                        {% set params = params|merge({('sans[' ~ loop.index0 ~ ']'): s}) %}
+                    {% endfor %}
+                    <a href="{{ path('app_menu', params) }}" class="px-4 py-2 rounded-full font-body text-sm transition-all {{ isActive ? 'bg-pieza-orange text-pieza-cream' : 'bg-pieza-orange/20 text-pieza-orange hover:bg-pieza-orange/40' }}">
+                        Sans {{ allergenLabel }}
+                    </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             {# Products Display - Grouped by Category #}
             {% if productsByCategory|length > 0 %}
                 {% for catKey, catProducts in productsByCategory %}

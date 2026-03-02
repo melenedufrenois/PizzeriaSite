@@ -36,7 +36,8 @@ class ProductRepository extends ServiceEntityRepository
         ?string $category = null,
         ?string $type = null,
         ?string $base = null,
-        ?string $alcoholic = null
+        ?string $alcoholic = null,
+        ?array $excludeAllergens = null
     ): array {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.active = :active')
@@ -70,6 +71,19 @@ class ProductRepository extends ServiceEntityRepository
             $isAlcoholic = ($alcoholic === 'alcool');
             $results = array_filter($results, function($p) use ($isAlcoholic) {
                 return $p instanceof \App\Entity\Drink && $p->isAlcoholic() === $isAlcoholic;
+            });
+        }
+
+        // Exclude products containing specific allergens
+        if ($excludeAllergens && count($excludeAllergens) > 0) {
+            $results = array_filter($results, function($p) use ($excludeAllergens) {
+                $productAllergens = array_map('strtolower', $p->getAllergens());
+                foreach ($excludeAllergens as $allergen) {
+                    if (in_array(strtolower($allergen), $productAllergens)) {
+                        return false;
+                    }
+                }
+                return true;
             });
         }
 
@@ -204,6 +218,28 @@ class ProductRepository extends ServiceEntityRepository
 
         // Remove empty categories
         return array_filter($grouped, fn($items) => count($items) > 0);
+    }
+
+    /**
+     * Get all distinct allergens from active products
+     * @return array<string, string>
+     */
+    public function findAllAllergens(): array
+    {
+        $products = $this->findAllActive();
+        $allergens = [];
+
+        foreach ($products as $product) {
+            foreach ($product->getAllergens() as $allergen) {
+                $key = strtolower(str_replace([' ', "'"], ['_', '_'], $allergen));
+                if (!isset($allergens[$key])) {
+                    $allergens[$key] = $allergen;
+                }
+            }
+        }
+
+        ksort($allergens);
+        return $allergens;
     }
 
     private function getClassForCategory(string $category): string

@@ -47,6 +47,9 @@ abstract class Product
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     protected ?\DateTimeInterface $createdAt = null;
 
+    #[ORM\Column(type: Types::JSON)]
+    private array $allergens = [];
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -172,5 +175,17 @@ abstract class Product
             'dessert' => 'Desserts',
             'boisson' => 'Boissons',
         ];
+    }
+
+    public function getAllergens(): array
+    {
+        return isset($this->allergens) ? $this->allergens : [];
+    }
+
+    public function setAllergens(array $allergens): static
+    {
+        $this->allergens = $allergens;
+
+        return $this;
     }
 }

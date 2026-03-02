@@ -35,10 +35,22 @@ class PageController extends AbstractController
         $category = $request->query->get('category');
         $type = $request->query->get('type');
         $filter = $request->query->get('filter'); // For base (pizza) or alcoholic (drink)
+        $sans = $request->query->all('sans'); // Allergen exclusion filters (e.g. sans[]=gluten)
 
         // Get all active categories
         $categories = Product::getAvailableCategories();
         $activeCategories = $productRepository->findActiveCategories();
+
+        // Get available allergens for filter pills
+        $availableAllergens = $productRepository->findAllAllergens();
+
+        // Build the list of allergens to exclude
+        $excludeAllergens = [];
+        foreach ($sans as $allergenKey) {
+            if (isset($availableAllergens[$allergenKey])) {
+                $excludeAllergens[] = $availableAllergens[$allergenKey];
+            }
+        }
 
         // Get context-specific filters for the selected category
         $filters = [];
@@ -52,14 +64,14 @@ class PageController extends AbstractController
         // Apply filters based on category
         if ($category) {
             if ($filterType === 'base') {
-                $products = $productRepository->findWithFilters($category, null, $filter, null);
+                $products = $productRepository->findWithFilters($category, null, $filter, null, $excludeAllergens ?: null);
             } elseif ($filterType === 'alcoholic') {
-                $products = $productRepository->findWithFilters($category, null, null, $filter);
+                $products = $productRepository->findWithFilters($category, null, null, $filter, $excludeAllergens ?: null);
             } else {
-                $products = $productRepository->findWithFilters($category, $filter, null, null);
+                $products = $productRepository->findWithFilters($category, $filter, null, null, $excludeAllergens ?: null);
             }
         } else {
-            $products = $productRepository->findAllActive();
+            $products = $productRepository->findWithFilters(null, null, null, null, $excludeAllergens ?: null);
         }
 
         // Group products by category for display
@@ -81,6 +93,8 @@ class PageController extends AbstractController
             'filterType' => $filterType,
             'activeCategory' => $category,
             'activeFilter' => $filter,
+            'availableAllergens' => $availableAllergens,
+            'activeSans' => $sans,
         ]);
     }
 }
