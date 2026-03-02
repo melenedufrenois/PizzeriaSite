@@ -1,3 +1,32 @@
 body {
     background-color: skyblue;
 }
+
+/* ── Responsive image placeholder ─────────────────────────────────────────── */
+
+/*
+ * Wraps the <picture> + <img> output of responsive_image().
+ * Setting explicit width/height on <img> prevents CLS before the real image
+ * loads; the blur-up transition is applied via the Stimulus controller.
+ */
+picture {
+    display: block;
+    overflow: hidden;
+}
+
+picture img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    /* Smooth blur-up reveal driven by the responsive-image Stimulus controller */
+    transition: filter 0.3s ease;
+}
+
+/* Data-saver toggle button */
+.data-saver-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
