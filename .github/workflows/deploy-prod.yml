@@ -40,6 +40,9 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           printf '%s\n' "$PROD_DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > ~/.ssh/id_ed25519.pub
+          echo "Loaded deploy key fingerprint:"
+          ssh-keygen -lf ~/.ssh/id_ed25519.pub
 
       - name: Run deployment on server
         env:
@@ -48,9 +51,12 @@ jobs:
           PROD_DEPLOY_USER: ${{ secrets.PROD_DEPLOY_USER }}
         run: |
           set -euo pipefail
+          echo "Connecting to ${PROD_DEPLOY_USER}@${PROD_DEPLOY_HOST}:${PROD_DEPLOY_PORT:-22}"
           ssh \
             -i ~/.ssh/id_ed25519 \
+            -o IdentitiesOnly=yes \
             -o StrictHostKeyChecking=yes \
+            -vvv \
             -p "${PROD_DEPLOY_PORT:-22}" \
             "${PROD_DEPLOY_USER}@${PROD_DEPLOY_HOST}" \
             "cd /home/mehdi/PizzeriaSite && bash ./deploy.sh --branch prod"
