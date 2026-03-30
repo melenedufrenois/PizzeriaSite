@@ -174,6 +174,32 @@ Par environnement :
 - `.env.dev` : `MAILER_DSN=smtp://127.0.0.1:1025` (Mailpit local)
 - `.env.prod` : `MAILER_DSN=smtp://...` (SMTP réel de production)
 
+## 🚀 Déploiement automatique GitHub -> prod
+
+Un workflow GitHub Actions déclenche automatiquement `deploy.sh` à chaque `push` sur la branche `prod`.
+
+Secrets GitHub à créer dans `Settings > Secrets and variables > Actions` :
+
+- `PROD_DEPLOY_HOST` : IP ou domaine du serveur de production
+- `PROD_DEPLOY_PORT` : port SSH du serveur (`22` si standard)
+- `PROD_DEPLOY_USER` : utilisateur SSH autorisé à lancer `deploy.sh`
+- `PROD_DEPLOY_SSH_KEY` : clé privée SSH utilisée par GitHub Actions
+- `PROD_DEPLOY_KNOWN_HOSTS` : sortie de `ssh-keyscan -H votre-serveur`
+
+Exemple pour remplir `PROD_DEPLOY_KNOWN_HOSTS` :
+
+```bash
+ssh-keyscan -H votre-serveur
+```
+
+Le workflow exécute ensuite :
+
+```bash
+cd /home/mehdi/PizzeriaSite && bash ./deploy.sh --branch prod
+```
+
+Important : l'utilisateur SSH doit pouvoir exécuter `deploy.sh` sans interaction. Si ce n'est pas `root`, il lui faut du `sudo` sans mot de passe pour les commandes utilisées par le script (`rsync`, `chown`, `chmod`, etc.).
+
 ## ✉️ Formulaire de contact
 
 - Route : `GET|POST /contact`
