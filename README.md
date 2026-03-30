@@ -48,7 +48,7 @@ docker compose exec php php bin/console tailwind:build
 | Hôte | database |
 | Base | pizzeria |
 | Utilisateur | pizzeria_user |
-| Mot de passe | pizzeria_password |
+| Mot de passe | `changeme` par défaut en Docker local, sinon valeur de `MYSQL_PASSWORD` |
 
 ---
 
@@ -153,7 +153,7 @@ Les tests sont organisés dans le dossier `tests/e2e/` :
 
 La configuration Playwright se trouve dans `playwright.config.ts`. Par défaut :
 - Les tests s'exécutent sur Chromium
-- L'URL de base est `http://localhost` (peut être modifiée via `BASE_URL`)
+- L'URL de base est `http://localhost:8000` (peut être modifiée via `BASE_URL`)
 - Les captures d'écran sont prises en cas d'échec
 - Les traces sont enregistrées lors du premier retry
 
