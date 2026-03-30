@@ -199,6 +199,7 @@ php bin/console app:contact:set-recipient contact@otrexemple.fr
 - Duvivier Sacha
 - Kenouz Abdelghani
 - Dadon Théo
+- Fischer Martin
 
 ---
 
