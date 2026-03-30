@@ -109,3 +109,26 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+
+  deploy_prod:
+    name: Deploy Production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/prod'
+    needs: test
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
+    permissions:
+      contents: read
+
+    steps:
+    - name: Validate deployment script
+      run: |
+        set -euo pipefail
+        test -x /home/mehdi/PizzeriaSite/deploy.sh
+
+    - name: Run deployment on self-hosted runner
+      run: |
+        set -euo pipefail
+        cd /home/mehdi/PizzeriaSite
+        bash ./deploy.sh --branch prod
