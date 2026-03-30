@@ -5,12 +5,14 @@ namespace App\Entity;
 use App\Repository\DessertRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DessertRepository::class)]
 #[ORM\Table(name: 'dessert')]
 class Dessert extends Product
 {
     #[ORM\Column(type: Types::JSON)]
+    #[Assert\NotNull(message: 'Les ingrédients sont obligatoires')]
     private array $ingredients = [];
 
     #[ORM\Column]

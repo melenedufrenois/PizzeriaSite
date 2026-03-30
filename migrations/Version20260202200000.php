@@ -37,20 +37,20 @@ final class Version20260202200000 extends AbstractMigration
         $this->addSql('CREATE TABLE pizza (
             id INT NOT NULL PRIMARY KEY REFERENCES product(id) ON DELETE CASCADE,
             base VARCHAR(20) NOT NULL,
-            ingredients JSON NOT NULL DEFAULT \'[]\'
+            ingredients JSON NOT NULL
         )');
 
         // Create child table: pasta
         $this->addSql('CREATE TABLE pasta (
             id INT NOT NULL PRIMARY KEY REFERENCES product(id) ON DELETE CASCADE,
-            ingredients JSON NOT NULL DEFAULT \'[]\',
+            ingredients JSON NOT NULL,
             pasta_type VARCHAR(50) DEFAULT NULL
         )');
 
         // Create child table: dessert
         $this->addSql('CREATE TABLE dessert (
             id INT NOT NULL PRIMARY KEY REFERENCES product(id) ON DELETE CASCADE,
-            ingredients JSON NOT NULL DEFAULT \'[]\',
+            ingredients JSON NOT NULL,
             contains_allergens BOOLEAN NOT NULL DEFAULT FALSE
         )');
 
