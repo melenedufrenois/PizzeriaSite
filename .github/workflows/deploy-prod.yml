@@ -11,52 +11,21 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
     permissions:
       contents: read
 
     steps:
-      - name: Validate required secrets
-        env:
-          PROD_DEPLOY_HOST: ${{ secrets.PROD_DEPLOY_HOST }}
-          PROD_DEPLOY_SSH_KEY: ${{ secrets.PROD_DEPLOY_SSH_KEY }}
-          PROD_DEPLOY_KNOWN_HOSTS: ${{ secrets.PROD_DEPLOY_KNOWN_HOSTS }}
-          PROD_DEPLOY_USER: ${{ secrets.PROD_DEPLOY_USER }}
+      - name: Validate deployment script
         run: |
           set -euo pipefail
-          test -n "$PROD_DEPLOY_HOST"
-          test -n "$PROD_DEPLOY_SSH_KEY"
-          test -n "$PROD_DEPLOY_KNOWN_HOSTS"
-          test -n "$PROD_DEPLOY_USER"
+          test -x /home/mehdi/PizzeriaSite/deploy.sh
 
-      - name: Prepare SSH access
-        env:
-          PROD_DEPLOY_SSH_KEY: ${{ secrets.PROD_DEPLOY_SSH_KEY }}
-          PROD_DEPLOY_KNOWN_HOSTS: ${{ secrets.PROD_DEPLOY_KNOWN_HOSTS }}
+      - name: Run deployment on self-hosted runner
         run: |
           set -euo pipefail
-          install -m 700 -d ~/.ssh
-          printf '%s\n' "$PROD_DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          printf '%s\n' "$PROD_DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
-          ssh-keygen -y -f ~/.ssh/id_ed25519 > ~/.ssh/id_ed25519.pub
-          echo "Loaded deploy key fingerprint:"
-          ssh-keygen -lf ~/.ssh/id_ed25519.pub
-
-      - name: Run deployment on server
-        env:
-          PROD_DEPLOY_HOST: ${{ secrets.PROD_DEPLOY_HOST }}
-          PROD_DEPLOY_PORT: ${{ secrets.PROD_DEPLOY_PORT }}
-          PROD_DEPLOY_USER: ${{ secrets.PROD_DEPLOY_USER }}
-        run: |
-          set -euo pipefail
-          echo "Connecting to ${PROD_DEPLOY_USER}@${PROD_DEPLOY_HOST}:${PROD_DEPLOY_PORT:-22}"
-          ssh \
-            -i ~/.ssh/id_ed25519 \
-            -o IdentitiesOnly=yes \
-            -o StrictHostKeyChecking=yes \
-            -vvv \
-            -p "${PROD_DEPLOY_PORT:-22}" \
-            "${PROD_DEPLOY_USER}@${PROD_DEPLOY_HOST}" \
-            "cd /home/mehdi/PizzeriaSite && bash ./deploy.sh --branch prod"
+          cd /home/mehdi/PizzeriaSite
+          bash ./deploy.sh --branch prod
