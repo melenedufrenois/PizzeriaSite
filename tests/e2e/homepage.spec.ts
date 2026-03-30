@@ -24,10 +24,10 @@ test.describe('Page d\'accueil', () => {
     await expect(header).toHaveClass(/sticky/);
 
     // Vérifier les 3 liens de navigation (desktop)
-    const nav = page.locator('header nav');
+    const nav = page.locator('header nav[aria-label="Navigation principale"]');
     await expect(nav.locator('a', { hasText: 'La Carte' })).toHaveAttribute('href', '/carte');
     await expect(nav.locator('a', { hasText: 'À propos' })).toHaveAttribute('href', '#about');
-    await expect(nav.locator('a', { hasText: 'Contact' })).toHaveAttribute('href', '#contact');
+    await expect(nav.locator('a', { hasText: 'Contact' })).toHaveAttribute('href', '/contact');
   });
 
   test('doit afficher la section hero avec le titre principal', async ({ page }) => {

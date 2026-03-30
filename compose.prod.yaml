@@ -29,7 +29,7 @@ services:
     environment:
       APP_ENV: prod
       APP_DEBUG: 0
-      DATABASE_URL: mysql://pizzeria_user:pizzeria_password@database:3306/pizzeria?serverVersion=8.0.32&charset=utf8mb4
+      DATABASE_URL: mysql://${MYSQL_USER:-pizzeria_user}:${MYSQL_PASSWORD}@database:3306/pizzeria?serverVersion=8.0.32&charset=utf8mb4
     depends_on:
       database:
         condition: service_healthy
@@ -84,10 +84,10 @@ services:
         reservations:
           memory: 256M
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_secure_2024}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: pizzeria
-      MYSQL_USER: pizzeria_user
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-pizzeria_password}
+      MYSQL_USER: ${MYSQL_USER:-pizzeria_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     # ⚠️ Ne pas exposer le port 3306 en production!
     # ports:
     #   - "3306:3306"

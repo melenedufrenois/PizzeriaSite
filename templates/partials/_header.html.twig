@@ -4,16 +4,72 @@
             O'Trari
         </a>
 
-        <nav class="hidden md:flex items-center gap-8 font-body font-medium text-pieza-green">
+        <nav class="hidden md:flex items-center gap-8 font-body font-medium text-pieza-green" aria-label="Navigation principale">
             <a href="{{ path('app_menu') }}" class="hover:text-pieza-orange transition-colors">La Carte</a>
             <a href="#about" class="hover:text-pieza-orange transition-colors">À propos</a>
             <a href="{{ path('app_access') }}" class="hover:text-pieza-orange transition-colors">Accès</a>
             <a href="{{ path('app_contact') }}" class="hover:text-pieza-orange transition-colors">Contact</a>
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_admin_products') }}" class="text-pieza-orange hover:text-pieza-orange/80 transition-colors font-semibold" title="Administration">
+                    🔒 Admin
+                </a>
+            {% endif %}
         </nav>
 
+        <div class="flex items-center gap-3">
+            <div data-controller="theme">
+                <button class="theme-toggle" data-action="click->theme#toggle" data-theme-target="toggle" aria-label="Changer de thème">
+                    {# Clouds – background decoration (day) #}
+                    <svg class="theme-toggle__clouds" viewBox="0 0 100 60" aria-hidden="true">
+                        <path fill="white" d="M80,30 C80,18.95 71.04,10 60,10 C56.95,10 54.06,10.69 51.47,11.93 C47.53,4.91 40.09,0 31.43,0 C19.78,0 10.14,9.02 9.17,20.4 C3.97,22.18 0,27.14 0,33 C0,40.18 5.82,46 13,46 L78,46 C90.15,46 100,36.15 100,24 C100,14.66 91.13,6.8 80,6.07 L80,30 Z"/>
+                    </svg>
+                    {# Stars – background decoration (night) #}
+                    <svg class="theme-toggle__stars" viewBox="0 0 80 70" aria-hidden="true">
+                        <circle fill="white" cx="10" cy="10" r="2.5"/>
+                        <circle fill="white" cx="30" cy="25" r="1.8"/>
+                        <circle fill="white" cx="50" cy="10" r="3"/>
+                        <circle fill="white" cx="70" cy="30" r="2.5"/>
+                        <circle fill="white" cx="20" cy="50" r="2"/>
+                        <circle fill="white" cx="60" cy="55" r="2.5"/>
+                    </svg>
+                    {# The sliding circle: sun ↔ moon #}
+                    <div class="theme-toggle__slider"></div>
+                </button>
+            </div>
+
+            {# Mobile hamburger button #}
+            <button
+                id="nav-toggle"
+                class="md:hidden flex flex-col justify-center gap-1.5 w-11 h-11 p-2 rounded-lg text-pieza-green hover:bg-pieza-green/10 transition-colors"
+                aria-label="Ouvrir le menu"
+                aria-expanded="false"
+                aria-controls="mobile-nav"
+            >
+                <span class="block w-full h-0.5 bg-current rounded transition-all"></span>
+                <span class="block w-full h-0.5 bg-current rounded transition-all"></span>
+                <span class="block w-full h-0.5 bg-current rounded transition-all"></span>
+            </button>
+        </div>
+    </div>
+
+    {# Mobile nav panel #}
+    <nav
+        id="mobile-nav"
+        class="hidden md:hidden border-t-2 border-pieza-green bg-pieza-cream"
+        aria-label="Navigation mobile"
+    >
+        <ul class="flex flex-col px-6 py-4 gap-1 font-body font-medium text-pieza-green">
+            <li><a href="{{ path('app_menu') }}" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">La Carte</a></li>
+            <li><a href="#about" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">À propos</a></li>
+            <li><a href="{{ path('app_access') }}" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">Accès</a></li>
+            <li><a href="{{ path('app_contact') }}" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">Contact</a></li>
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('app_admin_products') }}" class="flex items-center min-h-[44px] px-3 rounded-xl bg-pieza-orange/10 text-pieza-orange font-semibold hover:bg-pieza-orange/20 transition-colors">🔒 Administration</a></li>
+            {% endif %}
+        </ul>
+    </nav>
         {# <button class="bg-pieza-green text-pieza-cream px-6 py-3 rounded-full font-body font-medium hover:bg-pieza-orange transition-colors flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             <span>Order Now</span>
         </button> #}
-    </div>
 </header>

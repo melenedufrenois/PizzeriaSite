@@ -8,3 +8,36 @@ import './stimulus_bootstrap.js';
 import './styles/app.css';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+
+// Mobile navigation toggle (works with Turbo and full reloads)
+const initMobileNav = () => {
+    const toggle = document.getElementById('nav-toggle');
+    const nav = document.getElementById('mobile-nav');
+
+    if (!toggle || !nav) {
+        return;
+    }
+
+    if (toggle.dataset.bound === 'true') {
+        return;
+    }
+    toggle.dataset.bound = 'true';
+
+    toggle.addEventListener('click', () => {
+        const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!isOpen));
+        nav.classList.toggle('hidden', isOpen);
+    });
+
+    // Close nav when a link is clicked
+    nav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            toggle.setAttribute('aria-expanded', 'false');
+            nav.classList.add('hidden');
+        });
+    });
+};
+
+document.addEventListener('DOMContentLoaded', initMobileNav);
+document.addEventListener('turbo:load', initMobileNav);
+document.addEventListener('turbo:render', initMobileNav);

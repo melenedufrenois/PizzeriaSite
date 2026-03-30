@@ -5,10 +5,12 @@
 {% block body %}
     <div class="min-h-screen font-body">
         {% include 'partials/_header.html.twig' %}
-        {% include 'partials/_hero.html.twig' %}
-        {% include 'partials/_menu.html.twig' with { pizzas: pizzas } %}
-        {% include 'partials/_storytelling.html.twig' %}
-        {% include 'partials/_about.html.twig' %}
+        <main id="main-content" tabindex="-1">
+            {% include 'partials/_hero.html.twig' %}
+            {% include 'partials/_menu.html.twig' with { pizzas: pizzas } %}
+            {% include 'partials/_storytelling.html.twig' %}
+            {% include 'partials/_about.html.twig' %}
+        </main>
         {% include 'partials/_footer.html.twig' %}
     </div>
 {% endblock %}

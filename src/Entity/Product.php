@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\Table(name: 'product')]
@@ -24,18 +25,28 @@ abstract class Product
     protected ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'Le nom du produit est obligatoire')]
+    #[Assert\Length(max: 100, maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères')]
     protected ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(max: 1000, maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères')]
     protected ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'image est obligatoire")]
+    #[Assert\Length(max: 255, maxMessage: "L'URL de l'image ne peut pas dépasser {{ limit }} caractères")]
+    #[Assert\Url(message: "L'URL de l'image n'est pas valide")]
     protected ?string $image = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
+    #[Assert\NotBlank(message: 'Le prix est obligatoire')]
+    #[Assert\Positive(message: 'Le prix doit être positif')]
+    #[Assert\LessThan(value: 1000, message: 'Le prix doit être inférieur à 1000€')]
     protected ?string $price = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Assert\Length(max: 50, maxMessage: 'Le type ne peut pas dépasser {{ limit }} caractères')]
     protected ?string $type = null;
 
     #[ORM\Column]
@@ -43,6 +54,10 @@ abstract class Product
 
     #[ORM\Column]
     protected bool $active = true;
+
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    #[Assert\PositiveOrZero(message: "L'ordre d'affichage doit être positif ou zéro")]
+    protected int $displayOrder = 0;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     protected ?\DateTimeInterface $createdAt = null;
@@ -65,7 +80,7 @@ abstract class Product
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
         return $this;
@@ -87,7 +102,7 @@ abstract class Product
         return $this->image;
     }
 
-    public function setImage(string $image): static
+    public function setImage(?string $image): static
     {
         $this->image = $image;
         return $this;
@@ -98,7 +113,7 @@ abstract class Product
         return $this->price;
     }
 
-    public function setPrice(string $price): static
+    public function setPrice(?string $price): static
     {
         $this->price = $price;
         return $this;
@@ -134,6 +149,17 @@ abstract class Product
     public function setActive(bool $active): static
     {
         $this->active = $active;
+        return $this;
+    }
+
+    public function getDisplayOrder(): int
+    {
+        return $this->displayOrder;
+    }
+
+    public function setDisplayOrder(?int $displayOrder): static
+    {
+        $this->displayOrder = $displayOrder ?? 0;
         return $this;
     }
 

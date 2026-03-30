@@ -2,7 +2,7 @@
 
 # ===========================================
 # Script de déploiement O'Trari Pizzeria
-# Usage: ./deploy.sh [--with-fixtures]
+# Usage: ./deploy.sh [--with-fixtures] [--branch <branch>]
 # ===========================================
 
 set -e  # Exit on error
@@ -17,11 +17,30 @@ NC='\033[0m' # No Color
 SOURCE_DIR="/home/mehdi/PizzeriaSite"
 TARGET_DIR="/var/www/pizzeria"
 WITH_FIXTURES=false
+DEPLOY_BRANCH=""
 
 # Parse arguments
-if [[ "$1" == "--with-fixtures" ]]; then
-    WITH_FIXTURES=true
-fi
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --with-fixtures)
+            WITH_FIXTURES=true
+            shift
+            ;;
+        --branch)
+            if [[ -z "$2" ]]; then
+                echo -e "${RED}Erreur: --branch requiert un nom de branche.${NC}"
+                exit 1
+            fi
+            DEPLOY_BRANCH="$2"
+            shift 2
+            ;;
+        *)
+            echo -e "${RED}Argument inconnu: $1${NC}"
+            echo "Usage: ./deploy.sh [--with-fixtures] [--branch <branch>]"
+            exit 1
+            ;;
+    esac
+done
 
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}   Déploiement O'Trari Pizzeria${NC}"
@@ -31,7 +50,18 @@ echo ""
 # Step 1: Git pull
 echo -e "${YELLOW}[1/7] Pull des dernières modifications...${NC}"
 cd "$SOURCE_DIR"
-git pull
+if [[ -n "$DEPLOY_BRANCH" ]]; then
+    echo -e "Branche cible: ${GREEN}${DEPLOY_BRANCH}${NC}"
+    git fetch --prune origin "$DEPLOY_BRANCH"
+    if git show-ref --verify --quiet "refs/heads/$DEPLOY_BRANCH"; then
+        git checkout "$DEPLOY_BRANCH"
+    else
+        git checkout -B "$DEPLOY_BRANCH" "origin/$DEPLOY_BRANCH"
+    fi
+    git reset --hard "origin/$DEPLOY_BRANCH"
+else
+    git pull --ff-only
+fi
 
 # Step 2: Rsync files
 echo -e "${YELLOW}[2/7] Synchronisation des fichiers...${NC}"
