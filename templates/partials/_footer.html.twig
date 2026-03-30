@@ -62,10 +62,12 @@
 
         <div class="border-t border-pieza-cream/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 font-body text-sm text-pieza-cream/50">
             <p>Version 2.0.0 &copy; 2026 O'Trari. Tous droits réservés.</p>
-            <div class="flex gap-6">
+            <div class="flex flex-wrap justify-center gap-4 md:gap-6">
                 <a href="#" class="hover:text-pieza-orange transition-colors">Politique de confidentialité</a>
                 <a href="#" class="hover:text-pieza-orange transition-colors">Conditions d'utilisation</a>
-                {% if not app.user %}
+                {% if app.user and is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_admin_products') }}" class="hover:text-pieza-orange transition-colors">Administration</a>
+                {% else %}
                     <a href="{{ path('app_admin_login') }}" class="hover:text-pieza-orange transition-colors">Admin</a>
                 {% endif %}
             </div>
