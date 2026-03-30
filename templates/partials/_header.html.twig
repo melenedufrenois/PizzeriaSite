@@ -9,6 +9,11 @@
             <a href="#about" class="hover:text-pieza-orange transition-colors">À propos</a>
             <a href="{{ path('app_access') }}" class="hover:text-pieza-orange transition-colors">Accès</a>
             <a href="{{ path('app_contact') }}" class="hover:text-pieza-orange transition-colors">Contact</a>
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_admin_products') }}" class="text-pieza-orange hover:text-pieza-orange/80 transition-colors font-semibold" title="Administration">
+                    🔒 Admin
+                </a>
+            {% endif %}
         </nav>
 
         <div class="flex items-center gap-3">
@@ -58,6 +63,9 @@
             <li><a href="#about" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">À propos</a></li>
             <li><a href="{{ path('app_access') }}" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">Accès</a></li>
             <li><a href="{{ path('app_contact') }}" class="flex items-center min-h-[44px] px-3 rounded-xl hover:bg-pieza-green/10 hover:text-pieza-orange transition-colors">Contact</a></li>
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('app_admin_products') }}" class="flex items-center min-h-[44px] px-3 rounded-xl bg-pieza-orange/10 text-pieza-orange font-semibold hover:bg-pieza-orange/20 transition-colors">🔒 Administration</a></li>
+            {% endif %}
         </ul>
     </nav>
         {# <button class="bg-pieza-green text-pieza-cream px-6 py-3 rounded-full font-body font-medium hover:bg-pieza-orange transition-colors flex items-center gap-2">

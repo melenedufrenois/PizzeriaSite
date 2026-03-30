@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Administration - Pizzeria{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    {% block stylesheets %}{% endblock %}
+    <style>
+        :root {
+            --color-pieza-green: #2D3B2F;
+            --color-pieza-cream: #F5F1E8;
+            --color-pieza-orange: #FF6B4A;
+            --color-pieza-orange-light: #ff8a65;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .admin-header {
+            background-color: var(--color-pieza-green);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .admin-nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .admin-nav a {
+            color: var(--color-pieza-cream);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .admin-nav a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--color-pieza-orange);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--color-pieza-orange-light);
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .badge-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--color-pieza-orange);
+            color: white;
+            border-color: var(--color-pieza-orange);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-pieza-orange);
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+
+        /* Style for form validation errors - Symfony renders these as <ul><li> */
+        .form-group > ul {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin: 0.25rem 0 0 0;
+            padding-left: 1.2rem;
+        }
+
+        .form-group > ul li {
+            margin: 0.125rem 0;
+        }
+
+        .form-error {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .global-errors {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .global-errors .alert-heading {
+            color: #721c24;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .global-errors ul {
+            color: #721c24;
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <h1>🍕 Administration</h1>
+        <nav class="admin-nav">
+            <a href="{{ path('app_admin_products') }}">Produits</a>
+            <a href="{{ path('app_home') }}">Voir le site</a>
+            {% if app.user %}
+                <span style="color: var(--color-pieza-cream); margin-left: 1rem;">
+                    👤 {{ app.user.email }}
+                </span>
+                <a href="{{ path('app_admin_logout') }}" style="color: var(--color-pieza-orange);">
+                    Déconnexion
+                </a>
+            {% endif %}
+        </nav>
+    </header>
+    
+    <main class="admin-container">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        
+        {% for message in app.flashes('danger') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+        
+        {% block body %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -21,7 +21,9 @@
                     </li>
                     <li>
                         <a href="{{ path('app_access') }}" class="text-pieza-cream/70 hover:text-pieza-orange transition-colors">Accès & itinéraire</a>
-                        <a href="{{ path('app_contact') }}" class="text-pieza-cream/70 hover:text-pieza-orange transition-colors">Formulaire de contact</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_contact') }}" class="text-pieza-cream/70 hover:text-pieza-orange transition-colors">Contact</a>
                     </li>
                     <li>
                         <a href="#" class="text-pieza-cream/70 hover:text-pieza-orange transition-colors">Carrières</a>
@@ -63,6 +65,9 @@
             <div class="flex gap-6">
                 <a href="#" class="hover:text-pieza-orange transition-colors">Politique de confidentialité</a>
                 <a href="#" class="hover:text-pieza-orange transition-colors">Conditions d'utilisation</a>
+                {% if not app.user %}
+                    <a href="{{ path('app_admin_login') }}" class="hover:text-pieza-orange transition-colors">Admin</a>
+                {% endif %}
             </div>
         </div>
     </div>

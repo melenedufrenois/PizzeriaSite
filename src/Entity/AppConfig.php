@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Repository\AppConfigRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AppConfigRepository::class)]
 #[ORM\Table(name: 'app_config')]
@@ -18,9 +19,13 @@ class AppConfig
     private ?int $id = null;
 
     #[ORM\Column(name: 'config_key', length: 100)]
+    #[Assert\NotBlank(message: 'La clé de configuration est obligatoire')]
+    #[Assert\Length(max: 100, maxMessage: 'La clé ne peut pas dépasser {{ limit }} caractères')]
     private string $configKey = '';
 
     #[ORM\Column(name: 'config_value', length: 255)]
+    #[Assert\NotBlank(message: 'La valeur de configuration est obligatoire')]
+    #[Assert\Length(max: 255, maxMessage: 'La valeur ne peut pas dépasser {{ limit }} caractères')]
     private string $configValue = '';
 
     public function getId(): ?int

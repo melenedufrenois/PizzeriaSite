@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Administration Pizzeria</title>
+    <style>
+        :root {
+            --color-pieza-green: #2D3B2F;
+            --color-pieza-cream: #F5F1E8;
+            --color-pieza-orange: #FF6B4A;
+            --color-pieza-orange-light: #ff8a65;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-pieza-cream);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            color: var(--color-pieza-green);
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+        }
+
+        .login-header p {
+            color: #666;
+            margin: 0;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-pieza-orange);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--color-pieza-orange);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-pieza-orange-light);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--color-pieza-green);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">🍕</div>
+                <h1>Administration</h1>
+                <p>Connectez-vous pour gérer votre pizzeria</p>
+            </div>
+
+            {% if error %}
+                <div class="alert alert-danger">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{{ path('app_admin_login') }}">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <div class="form-group">
+                    <label for="_username">Email</label>
+                    <input type="email"
+                           id="_username"
+                           name="_username"
+                           class="form-control"
+                           value="{{ last_username }}"
+                           required
+                           autofocus
+                           placeholder="admin@pizzeria.fr">
+                </div>
+
+                <div class="form-group">
+                    <label for="_password">Mot de passe</label>
+                    <input type="password"
+                           id="_password"
+                           name="_password"
+                           class="form-control"
+                           required
+                           placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Se connecter
+                </button>
+            </form>
+
+            <a href="{{ path('app_home') }}" class="back-link">
+                ← Retour au site
+            </a>
+        </div>
+    </div>
+</body>
+</html>

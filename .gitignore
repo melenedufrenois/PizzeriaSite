@@ -32,3 +32,7 @@
 
 # TDD local tests (non versionnés)
 /test_perso/
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
