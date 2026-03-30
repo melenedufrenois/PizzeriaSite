@@ -101,6 +101,8 @@
         .btn-sm {
             padding: 0.25rem 0.5rem;
             font-size: 0.875rem;
+            min-width: 80px;
+            text-align: center;
         }
         
         .alert {
@@ -131,13 +133,30 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed;
         }
-        
+
         th, td {
             padding: 0.75rem;
             text-align: left;
-            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
         }
+
+        tbody tr {
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        td:nth-child(1) { width: 80px; }
+        td:nth-child(2) { width: auto; }
+        td:nth-child(3) { width: 100px; }
+        td:nth-child(4) { width: 80px; }
+        td:nth-child(5) { width: 70px; }
+        td:nth-child(6) { width: 80px; }
+        td:nth-child(7) { width: 280px; }
         
         th {
             background-color: #f8f9fa;
@@ -267,6 +286,13 @@
         .actions {
             display: flex;
             gap: 0.5rem;
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .actions form {
+            display: flex;
+            margin: 0;
         }
     </style>
 </head>
