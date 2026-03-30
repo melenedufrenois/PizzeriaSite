@@ -5,27 +5,53 @@ security:
 
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
 
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+
+        api_login:
+            pattern: ^/api/login_check
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
+
+        admin:
+            pattern: ^/admin
+            provider: app_user_provider
+            form_login:
+                login_path: app_admin_login
+                check_path: app_admin_login
+                enable_csrf: true
+                default_target_path: app_admin_products
+            logout:
+                path: app_admin_logout
+                target: app_admin_login
+
         main:
             lazy: true
-            provider: users_in_memory
-
-            # Activate different ways to authenticate:
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            provider: app_user_provider
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/admin/login, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/logout, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
     security:

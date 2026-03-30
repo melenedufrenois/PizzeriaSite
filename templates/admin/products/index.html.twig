@@ -1,0 +1,91 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Produits - Administration{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 style="margin: 0;">Gestion des produits</h2>
+        <div style="display: flex; gap: 0.5rem;">
+            <a href="{{ path('app_admin_product_new', {type: 'pizza'}) }}" class="btn btn-primary">+ Pizza</a>
+            <a href="{{ path('app_admin_product_new', {type: 'pates'}) }}" class="btn btn-primary">+ Pâte</a>
+            <a href="{{ path('app_admin_product_new', {type: 'dessert'}) }}" class="btn btn-primary">+ Dessert</a>
+            <a href="{{ path('app_admin_product_new', {type: 'boisson'}) }}" class="btn btn-primary">+ Boisson</a>
+        </div>
+    </div>
+    
+    <div class="filters">
+        <a href="{{ path('app_admin_products') }}" class="filter-btn {{ category is null ? 'active' : '' }}">
+            Tous
+        </a>
+        {% for key, label in categories %}
+            <a href="{{ path('app_admin_products', {category: key}) }}" class="filter-btn {{ category == key ? 'active' : '' }}">
+                {{ label }}
+            </a>
+        {% endfor %}
+    </div>
+    
+    {% if products is empty %}
+        <p style="text-align: center; color: #666; padding: 2rem;">
+            Aucun produit trouvé. Créez votre premier produit !
+        </p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Catégorie</th>
+                    <th>Prix</th>
+                    <th>Ordre</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>
+                            <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+                        </td>
+                        <td>
+                            <strong>{{ product.name }}</strong>
+                            {% if product.description %}
+                                <br><small style="color: #666;">{{ product.description|slice(0, 50) }}...</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge badge-secondary">
+                                {{ product.categoryLabel }}
+                            </span>
+                        </td>
+                        <td>{{ product.price }} €</td>
+                        <td>{{ product.displayOrder }}</td>
+                        <td>
+                            {% if product.active %}
+                                <span class="badge badge-success">Actif</span>
+                            {% else %}
+                                <span class="badge badge-secondary">Inactif</span>
+                            {% endif %}
+                        </td>
+                        <td class="actions">
+                            <a href="{{ path('app_admin_product_edit', {id: product.id}) }}" class="btn btn-secondary btn-sm">
+                                Modifier
+                            </a>
+                            <form action="{{ path('app_admin_product_toggle', {id: product.id}) }}" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-sm {{ product.active ? 'btn-danger' : 'btn-success' }}">
+                                    {{ product.active ? 'Désactiver' : 'Activer' }}
+                                </button>
+                            </form>
+                            <form action="{{ path('app_admin_product_delete', {id: product.id}) }}" method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}

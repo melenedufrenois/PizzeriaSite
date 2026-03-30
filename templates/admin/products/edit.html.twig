@@ -1,0 +1,114 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Modifier {{ product.name }} - Administration{% endblock %}
+
+{% block body %}
+<div class="card">
+    <h2 style="margin-top: 0;">Modifier : {{ product.name }}</h2>
+    
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+        
+        <div class="form-group">
+            {{ form_label(form.name) }}
+            {{ form_widget(form.name, {attr: {class: 'form-control'}}) }}
+            {{ form_errors(form.name) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, {attr: {class: 'form-control', rows: 4}}) }}
+            {{ form_errors(form.description) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form_label(form.image) }}
+            {{ form_widget(form.image, {attr: {class: 'form-control', placeholder: 'https://exemple.com/image.jpg'}}) }}
+            {{ form_errors(form.image) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form_label(form.price) }}
+            {{ form_widget(form.price, {attr: {class: 'form-control', step: '0.01'}}) }}
+            {{ form_errors(form.price) }}
+        </div>
+        
+        {# Pizza specific fields #}
+        {% if form.base is defined %}
+            <div class="form-group">
+                {{ form_label(form.base) }}
+                {{ form_widget(form.base, {attr: {class: 'form-control'}}) }}
+                {{ form_errors(form.base) }}
+            </div>
+        {% endif %}
+
+        {% if form.ingredientsText is defined %}
+            <div class="form-group">
+                {{ form_label(form.ingredientsText) }}
+                {{ form_widget(form.ingredientsText, {attr: {class: 'form-control', placeholder: 'Tomate, Mozza, Jambon, Champignons'}}) }}
+                {{ form_errors(form.ingredientsText) }}
+                <small style="color: #666;">Séparez les ingrédients par des virgules</small>
+            </div>
+        {% endif %}
+
+        {# Pasta specific fields #}
+        {% if form.pastaType is defined %}
+            <div class="form-group">
+                {{ form_label(form.pastaType) }}
+                {{ form_widget(form.pastaType, {attr: {class: 'form-control'}}) }}
+                {{ form_errors(form.pastaType) }}
+            </div>
+        {% endif %}
+
+        {# Dessert specific fields #}
+        {% if form.containsAllergens is defined %}
+            <div class="form-group">
+                {{ form_label(form.containsAllergens) }}
+                {{ form_widget(form.containsAllergens) }}
+                {{ form_errors(form.containsAllergens) }}
+            </div>
+        {% endif %}
+
+        {# Drink specific fields #}
+        {% if form.volume is defined %}
+            <div class="form-group">
+                {{ form_label(form.volume) }}
+                {{ form_widget(form.volume, {attr: {class: 'form-control', placeholder: '33cl, 50cl, 1L'}}) }}
+                {{ form_errors(form.volume) }}
+            </div>
+        {% endif %}
+
+        {% if form.isAlcoholic is defined %}
+            <div class="form-group">
+                {{ form_label(form.isAlcoholic) }}
+                {{ form_widget(form.isAlcoholic) }}
+                {{ form_errors(form.isAlcoholic) }}
+            </div>
+        {% endif %}
+        
+        {# Common fields #}
+        <div class="form-group">
+            {{ form_label(form.displayOrder) }}
+            {{ form_widget(form.displayOrder, {attr: {class: 'form-control', min: 0}}) }}
+            {{ form_errors(form.displayOrder) }}
+            <small style="color: #666;">Ordre d'affichage (0 = premier)</small>
+        </div>
+        
+        <div class="form-group form-check">
+            {{ form_widget(form.active) }}
+            {{ form_label(form.active) }}
+        </div>
+        
+        <div class="form-group form-check">
+            {{ form_widget(form.popular) }}
+            {{ form_label(form.popular) }}
+        </div>
+        
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+            <a href="{{ path('app_admin_products') }}" class="btn btn-secondary">Annuler</a>
+        </div>
+        
+    {{ form_end(form) }}
+</div>
+{% endblock %}

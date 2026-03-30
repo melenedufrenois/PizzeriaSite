@@ -5,10 +5,10 @@ services:
     image: mysql:8.0
     container_name: pizzeria_mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
       MYSQL_DATABASE: pizzeria
-      MYSQL_USER: pizzeria_user
-      MYSQL_PASSWORD: pizzeria_password
+      MYSQL_USER: ${MYSQL_USER:-pizzeria_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-changeme}
     ports:
       - "3306:3306"
     healthcheck:
@@ -26,8 +26,8 @@ services:
     container_name: pizzeria_phpmyadmin
     environment:
       PMA_HOST: database
-      PMA_USER: pizzeria_user
-      PMA_PASSWORD: pizzeria_password
+      PMA_USER: ${MYSQL_USER:-pizzeria_user}
+      PMA_PASSWORD: ${MYSQL_PASSWORD:-changeme}
     ports:
       - "8080:80"
     depends_on:
